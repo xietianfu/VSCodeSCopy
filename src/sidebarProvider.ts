@@ -74,12 +74,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     this.view.webview.postMessage({ type: "updateState", payload: state });
   }
 
-  public flashBlock(filePath: string) {
-    if (this.view) {
-      this.view.webview.postMessage({ type: "flashBlock", payload: filePath });
-    }
-  }
-
   public show() {
     if (this.view) {
       this.view.show(true);
@@ -109,13 +103,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         await this.storageService.updateStashPrompt(payload);
         break;
       }
-      case "copyAndClose": {
-        await this.handleCopy();
+      case "updateDescription": {
+        const payload = message.payload as { filePath: string; startLine: number; endLine: number; description: string };
+        await this.storageService.updateBlockDescription(payload.filePath, payload.startLine, payload.endLine, payload.description);
         break;
       }
-      case "stashAndClose": {
-        this.updateView();
-        this.fireChange();
+      case "copyAndClose": {
+        await this.handleCopy();
         break;
       }
       case "requestState": {

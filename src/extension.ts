@@ -49,17 +49,23 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const result = await collectService.collectFromEditor(editor);
-      if (result) {
-        if (
-          result.result.action === "added" ||
-          result.result.action === "merged"
-        ) {
-          sidebarProvider.show();
-        }
-        if (result.result.action === "skipped" && result.result.existingBlock) {
-          sidebarProvider.flashBlock(result.result.existingBlock.filePath);
-        }
+      await collectService.collectFromEditor(editor);
+      refreshAll();
+    }
+  );
+
+  const collectFromExplorerCommand = vscode.commands.registerCommand(
+    "easy-copy.collectFromExplorer",
+    async (clickedUri: vscode.Uri, selectedUris: vscode.Uri[]) => {
+      const uris = selectedUris && selectedUris.length > 0 ? selectedUris : clickedUri ? [clickedUri] : [];
+      if (uris.length === 0) {
+        vscode.window.showWarningMessage("请先选中文件或文件夹");
+        return;
+      }
+
+      const added = await collectService.collectFromUris(uris);
+      if (added > 0) {
+        vscode.window.showInformationMessage(`已收集 ${added} 个文件/文件夹`);
       }
       refreshAll();
     }
@@ -82,6 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(collectCommand);
+  context.subscriptions.push(collectFromExplorerCommand);
   context.subscriptions.push(openPanelCommand);
   context.subscriptions.push(clearStashCommand);
   context.subscriptions.push(statusBar);

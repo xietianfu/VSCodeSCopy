@@ -46,6 +46,11 @@
         "category": "Easy Copy"
       },
       {
+        "command": "easy-copy.collectFromExplorer",
+        "title": "+ 加入收集清单",
+        "category": "Easy Copy"
+      },
+      {
         "command": "easy-copy.openPanel",
         "title": "打开收集面板",
         "category": "Easy Copy"
@@ -77,6 +82,12 @@
           "command": "easy-copy.collect",
           "when": "editorHasSelection",
           "group": "9_cutcopypaste@100"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "easy-copy.collectFromExplorer",
+          "group": "5_cutcopypaste@100"
         }
       ]
     },

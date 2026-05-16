@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { CodeBlock } from "./types";
 import { ProjectService } from "./projectService";
 import { StorageService } from "./storageService";
-import { DedupResult, deduplicateBlock, assignColorIndex } from "./dedupService";
+import { assignColorIndex } from "./dedupService";
 
 export class CollectService {
   private projectService: ProjectService;
@@ -13,7 +13,7 @@ export class CollectService {
     this.storageService = storageService;
   }
 
-  async collectFromEditor(editor: vscode.TextEditor): Promise<{ result: DedupResult; block?: CodeBlock } | null> {
+  async collectFromEditor(editor: vscode.TextEditor): Promise<CodeBlock | null> {
     const selection = editor.selection;
     if (selection.isEmpty) {
       vscode.window.showWarningMessage("请先选中代码");
@@ -46,33 +46,57 @@ export class CollectService {
       isUntitled,
     };
 
-    const result = deduplicateBlock(existingBlocks, newBlock);
-
-    if (result.action === "skipped") {
-      vscode.window.showInformationMessage("已存在，已跳过");
-      return { result };
-    }
-
-    if (result.action === "merged") {
-      const updatedStash = await this.storageService.removeBlockFromStash(
-        result.originalBlock.filePath,
-        result.originalBlock.startLine,
-        result.originalBlock.endLine
-      );
-      const mergedWithColor: CodeBlock = {
-        ...result.mergedBlock,
-        colorIndex: assignColorIndex(updatedStash?.blocks || [], result.mergedBlock.filePath),
-      };
-      await this.storageService.addBlockToStash(mergedWithColor);
-      vscode.window.showInformationMessage(
-        `已合并为 ${mergedWithColor.fileName}:${mergedWithColor.startLine}-${mergedWithColor.endLine}`
-      );
-      return { result, block: mergedWithColor };
-    }
-
     await this.storageService.addBlockToStash(newBlock);
     const lineInfo = startLine === endLine ? `${startLine}` : `${startLine}-${endLine}`;
     vscode.window.showInformationMessage(`已收集 ${fileName}:${lineInfo}`);
-    return { result, block: newBlock };
+    return newBlock;
+  }
+
+  async collectFromUris(uris: vscode.Uri[]): Promise<number> {
+    let added = 0;
+
+    for (const uri of uris) {
+      const stat = await vscode.workspace.fs.stat(uri);
+      const isDir = (stat.type & vscode.FileType.Directory) !== 0;
+      await this.addUriToStash(uri, isDir);
+      added++;
+    }
+
+    return added;
+  }
+
+  private async addUriToStash(uri: vscode.Uri, isDir: boolean): Promise<void> {
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+    const projectId = workspaceFolder ? workspaceFolder.uri.fsPath : "global";
+
+    let filePath: string;
+    let fileName: string;
+
+    if (workspaceFolder) {
+      filePath = vscode.workspace.asRelativePath(uri, false);
+    } else {
+      filePath = uri.path.split("/").pop() || uri.path;
+    }
+    fileName = uri.path.split("/").pop() || "unknown";
+
+    if (isDir) {
+      fileName = fileName + "/";
+    }
+
+    const stash = this.storageService.getStash();
+    const existingBlocks = stash?.blocks || [];
+    const colorIndex = assignColorIndex(existingBlocks, filePath);
+
+    const newBlock: CodeBlock = {
+      filePath,
+      fileName,
+      startLine: 0,
+      endLine: 0,
+      colorIndex,
+      projectId,
+      isUntitled: false,
+    };
+
+    await this.storageService.addBlockToStash(newBlock);
   }
 }

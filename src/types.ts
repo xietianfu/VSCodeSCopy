@@ -6,6 +6,7 @@ export interface CodeBlock {
   colorIndex: number;
   projectId: string;
   isUntitled: boolean;
+  description?: string;
 }
 
 export interface Collection {
@@ -29,8 +30,8 @@ export interface StorageData {
 export type MessageType =
   | "removeBlock"
   | "updatePrompt"
+  | "updateDescription"
   | "copyAndClose"
-  | "stashAndClose"
   | "requestState"
   | "clearStash"
   | "copyHistory"

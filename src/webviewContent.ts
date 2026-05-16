@@ -9,31 +9,13 @@ export function getWebviewContent(placeholder: string): string {
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
   <title>Easy Copy</title>
   <style nonce="${nonce}">
-    :root {
-      --bg: var(--vscode-sideBar-background);
-      --fg: var(--vscode-sideBar-foreground);
-      --border: var(--vscode-sideBar-border, rgba(255,255,255,0.08));
-      --input-bg: var(--vscode-input-background);
-      --input-fg: var(--vscode-input-foreground);
-      --input-border: var(--vscode-input-border, rgba(255,255,255,0.1));
-      --btn-bg: var(--vscode-button-background);
-      --btn-fg: var(--vscode-button-foreground);
-      --btn-hover: var(--vscode-button-hoverBackground);
-      --btn-secondary-bg: var(--vscode-button-secondaryBackground);
-      --btn-secondary-fg: var(--vscode-button-secondaryForeground);
-      --btn-secondary-hover: var(--vscode-button-secondaryHoverBackground);
-      --danger: #f44747;
-      --success: #73c991;
-      --warn: #cca700;
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: var(--vscode-font-family);
-      font-size: var(--vscode-font-size);
-      color: var(--fg);
-      background: var(--bg);
+      font-family: var(--vscode-font-family, sans-serif);
+      font-size: var(--vscode-font-size, 13px);
+      color: var(--vscode-foreground, #cccccc);
+      background: var(--vscode-sideBar-background, var(--vscode-editor-background, #1e1e1e));
       padding: 8px;
     }
 
@@ -43,7 +25,7 @@ export function getWebviewContent(placeholder: string): string {
       justify-content: space-between;
       margin-bottom: 10px;
       padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--vscode-sideBar-border, var(--vscode-panel-border, rgba(128,128,128,0.35)));
     }
 
     .header h2 {
@@ -52,10 +34,11 @@ export function getWebviewContent(placeholder: string): string {
       display: flex;
       align-items: center;
       gap: 4px;
+      color: var(--vscode-foreground, #cccccc);
     }
 
     .header .count {
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
       font-size: 11px;
       font-weight: 400;
     }
@@ -63,7 +46,7 @@ export function getWebviewContent(placeholder: string): string {
     .empty-state {
       text-align: center;
       padding: 24px 12px;
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
     }
 
     .empty-state .icon { font-size: 28px; margin-bottom: 6px; }
@@ -72,40 +55,32 @@ export function getWebviewContent(placeholder: string): string {
     .block-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 3px;
       margin-bottom: 10px;
     }
 
-    .file-group {
+    .block-item {
+      display: flex;
+      align-items: center;
+      padding: 4px 8px;
       border-radius: 4px;
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      overflow: hidden;
+      background: var(--vscode-input-background, rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+      gap: 6px;
       animation: fadeIn 0.2s ease;
     }
 
-    .file-group.flash {
-      animation: flashAnim 0.6s ease;
-    }
-
-    .file-header {
-      display: flex;
-      align-items: center;
-      padding: 6px 8px;
-      gap: 6px;
-    }
-
-    .file-color {
-      width: 8px;
-      height: 8px;
+    .block-color {
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       flex-shrink: 0;
     }
 
-    .file-name {
+    .block-location {
       flex: 1;
-      font-weight: 600;
       font-size: 12px;
+      color: var(--vscode-foreground, #cccccc);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -114,40 +89,49 @@ export function getWebviewContent(placeholder: string): string {
       gap: 4px;
     }
 
-    .file-name .warn-icon {
-      color: var(--warn);
-      font-size: 12px;
-    }
+    .block-location .warn-icon { color: #cca700; font-size: 11px; }
 
-    .file-remove {
+    .block-remove {
       background: none;
       border: none;
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
       cursor: pointer;
-      font-size: 14px;
-      padding: 0 4px;
+      font-size: 13px;
+      padding: 0 3px;
       border-radius: 3px;
       transition: all 0.15s;
       line-height: 1;
+      flex-shrink: 0;
     }
 
-    .file-remove:hover {
-      color: var(--danger);
+    .block-remove:hover {
+      color: #f44747;
       background: rgba(244, 71, 71, 0.1);
     }
 
-    .line-list {
-      padding: 0 8px 6px 22px;
-      color: var(--vscode-descriptionForeground);
+    .file-desc-input {
+      display: block;
+      width: calc(100% - 16px);
+      margin: 1px 8px 4px 20px;
+      padding: 3px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+      background: var(--vscode-sideBar-background, var(--vscode-editor-background, #1e1e1e));
+      color: var(--vscode-input-foreground, var(--vscode-foreground, #cccccc));
+      font-family: var(--vscode-font-family, sans-serif);
       font-size: 11px;
-      line-height: 1.6;
+      outline: none;
+      transition: border-color 0.15s;
     }
+
+    .file-desc-input:focus { border-color: var(--vscode-focusBorder, #007fd4); }
+    .file-desc-input::placeholder { color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.5)); }
 
     .prompt-section { margin-bottom: 10px; }
 
     .prompt-label {
       font-size: 11px;
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
       margin-bottom: 4px;
     }
 
@@ -155,19 +139,19 @@ export function getWebviewContent(placeholder: string): string {
       width: 100%;
       padding: 6px 8px;
       border-radius: 4px;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
-      color: var(--input-fg);
-      font-family: var(--vscode-font-family);
-      font-size: var(--vscode-font-size);
+      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+      background: var(--vscode-input-background, rgba(255, 255, 255, 0.05));
+      color: var(--vscode-input-foreground, var(--vscode-foreground, #cccccc));
+      font-family: var(--vscode-font-family, sans-serif);
+      font-size: var(--vscode-font-size, 13px);
       resize: vertical;
       min-height: 48px;
       outline: none;
       transition: border-color 0.15s;
     }
 
-    .prompt-input:focus { border-color: var(--vscode-focusBorder); }
-    .prompt-input::placeholder { color: var(--vscode-descriptionForeground); }
+    .prompt-input:focus { border-color: var(--vscode-focusBorder, #007fd4); }
+    .prompt-input::placeholder { color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.5)); }
 
     .actions {
       display: flex;
@@ -180,7 +164,7 @@ export function getWebviewContent(placeholder: string): string {
       padding: 6px 12px;
       border-radius: 4px;
       border: none;
-      font-family: var(--vscode-font-family);
+      font-family: var(--vscode-font-family, sans-serif);
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
@@ -188,33 +172,27 @@ export function getWebviewContent(placeholder: string): string {
       text-align: center;
     }
 
-    .btn-stash {
-      background: var(--btn-secondary-bg);
-      color: var(--btn-secondary-fg);
-    }
-    .btn-stash:hover { background: var(--btn-secondary-hover); }
-
     .btn-copy {
-      background: var(--btn-bg);
-      color: var(--btn-fg);
+      background: var(--vscode-button-background, #0e639c);
+      color: var(--vscode-button-foreground, #ffffff);
     }
-    .btn-copy:hover { background: var(--btn-hover); }
+    .btn-copy:hover { background: var(--vscode-button-hoverBackground, #1177bb); }
     .btn-copy:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-clear {
       background: none;
-      color: var(--vscode-descriptionForeground);
-      border: 1px solid var(--border);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
+      border: 1px solid var(--vscode-sideBar-border, var(--vscode-panel-border, rgba(128,128,128,0.35)));
       flex: 0.5;
     }
-    .btn-clear:hover { background: rgba(244, 71, 71, 0.1); color: var(--danger); }
+    .btn-clear:hover { background: rgba(244, 71, 71, 0.1); color: #f44747; }
 
     .copy-countdown {
       display: none;
       text-align: center;
       margin-top: 8px;
       font-size: 12px;
-      color: var(--success);
+      color: #73c991;
       font-weight: 600;
     }
 
@@ -223,13 +201,6 @@ export function getWebviewContent(placeholder: string): string {
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(2px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes flashAnim {
-      0%, 100% { background: var(--input-bg); }
-      25% { background: rgba(255, 255, 255, 0.15); }
-      50% { background: var(--input-bg); }
-      75% { background: rgba(255, 255, 255, 0.15); }
     }
   </style>
 </head>
@@ -247,7 +218,7 @@ export function getWebviewContent(placeholder: string): string {
   <div id="blockList" class="block-list"></div>
 
   <div class="prompt-section">
-    <div class="prompt-label">💬 给 AI 的提示（可选）</div>
+    <div class="prompt-label">💬 汇总说明（可选）</div>
     <textarea
       id="promptInput"
       class="prompt-input"
@@ -257,7 +228,6 @@ export function getWebviewContent(placeholder: string): string {
 
   <div class="actions">
     <button id="btnClear" class="btn btn-clear" title="清空所有">清空</button>
-    <button id="btnStash" class="btn btn-stash">暂存</button>
     <button id="btnCopy" class="btn btn-copy">✓ 完成并复制</button>
   </div>
 
@@ -273,17 +243,12 @@ export function getWebviewContent(placeholder: string): string {
     var emptyState = document.getElementById('emptyState');
     var blockCount = document.getElementById('blockCount');
     var promptInput = document.getElementById('promptInput');
-    var btnStash = document.getElementById('btnStash');
     var btnCopy = document.getElementById('btnCopy');
     var btnClear = document.getElementById('btnClear');
     var copyCountdown = document.getElementById('copyCountdown');
 
     function escapeHtml(str) {
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-
-    function formatLineInfo(startLine, endLine) {
-      return startLine === endLine ? '' + startLine : startLine + '-' + endLine;
     }
 
     function render() {
@@ -293,51 +258,64 @@ export function getWebviewContent(placeholder: string): string {
 
       blockList.innerHTML = '';
 
-      var groups = {};
+      var lastFilePath = null;
       currentBlocks.forEach(function(block, idx) {
-        if (!groups[block.filePath]) {
-          groups[block.filePath] = { blocks: [], indices: [], colorIndex: block.colorIndex, fileName: block.fileName, isUntitled: block.isUntitled };
+        var color = colors[block.colorIndex % colors.length];
+        var warnIcon = block.isUntitled ? '<span class="warn-icon" title="未保存文件">⚠</span>' : '';
+
+        var lineInfo = '';
+        if (block.startLine === 0 && block.endLine === 0) {
+          lineInfo = '';
+        } else if (block.startLine === block.endLine) {
+          lineInfo = ':' + block.startLine;
+        } else {
+          lineInfo = ':' + block.startLine + '-' + block.endLine;
         }
-        groups[block.filePath].blocks.push(block);
-        groups[block.filePath].indices.push(idx);
+
+        var item = document.createElement('div');
+        item.className = 'block-item';
+
+        item.innerHTML =
+          '<div class="block-color" style="background:' + color + '"></div>' +
+          '<div class="block-location">' + warnIcon + escapeHtml(block.fileName) + lineInfo + '</div>' +
+          '<button class="block-remove" data-idx="' + idx + '" title="移除">×</button>';
+
+        blockList.appendChild(item);
+
+        var desc = block.description || '';
+        var descInput = document.createElement('input');
+        descInput.type = 'text';
+        descInput.className = 'file-desc-input';
+        descInput.dataset.blockidx = idx;
+        descInput.placeholder = '添加说明（可选）';
+        descInput.value = desc;
+        blockList.appendChild(descInput);
+
+        lastFilePath = block.filePath;
       });
 
-      var filePaths = Object.keys(groups);
-      filePaths.forEach(function(fp) {
-        var g = groups[fp];
-        var color = colors[g.colorIndex % colors.length];
-
-        var group = document.createElement('div');
-        group.className = 'file-group';
-        group.dataset.filepath = fp;
-
-        var warnIcon = g.isUntitled ? '<span class="warn-icon" title="未保存文件">⚠</span>' : '';
-
-        var lineInfos = g.blocks.map(function(b) {
-          return formatLineInfo(b.startLine, b.endLine);
-        }).join('\\n    ');
-
-        group.innerHTML =
-          '<div class="file-header">' +
-            '<div class="file-color" style="background:' + color + '"></div>' +
-            '<div class="file-name">' + warnIcon + escapeHtml(g.fileName) + '</div>' +
-            '<button class="file-remove" data-filepath="' + escapeHtml(fp) + '" title="移除文件所有块">×</button>' +
-          '</div>' +
-          '<div class="line-list">' + lineInfos + '</div>';
-
-        blockList.appendChild(group);
-      });
+      bindDescInputs();
     }
 
-    function flashFileGroup(filePath) {
-      var groups = blockList.querySelectorAll('.file-group');
-      for (var i = 0; i < groups.length; i++) {
-        if (groups[i].dataset.filepath === filePath) {
-          groups[i].classList.add('flash');
-          setTimeout(function(el) { el.classList.remove('flash'); }, 700, groups[i]);
-          break;
-        }
-      }
+    function bindDescInputs() {
+      var inputs = blockList.querySelectorAll('.file-desc-input');
+      inputs.forEach(function(input) {
+        var timer = null;
+        input.addEventListener('input', function() {
+          var blockIdx = parseInt(input.dataset.blockidx);
+          var val = input.value;
+          var block = currentBlocks[blockIdx];
+          if (block) {
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+              vscode.postMessage({
+                type: 'updateDescription',
+                payload: { filePath: block.filePath, startLine: block.startLine, endLine: block.endLine, description: val }
+              });
+            }, 300);
+          }
+        });
+      });
     }
 
     function startCountdown(seconds) {
@@ -370,21 +348,18 @@ export function getWebviewContent(placeholder: string): string {
       if (message.type === 'copySuccess') {
         startCountdown(3);
       }
-      if (message.type === 'flashBlock') {
-        flashFileGroup(message.payload);
-      }
     });
 
     blockList.addEventListener('click', function(e) {
-      if (e.target.classList.contains('file-remove')) {
-        var fp = e.target.dataset.filepath;
-        var toRemove = currentBlocks.filter(function(b) { return b.filePath === fp; });
-        toRemove.forEach(function(block) {
+      if (e.target.classList.contains('block-remove')) {
+        var idx = parseInt(e.target.dataset.idx);
+        var block = currentBlocks[idx];
+        if (block) {
           vscode.postMessage({
             type: 'removeBlock',
             payload: { filePath: block.filePath, startLine: block.startLine, endLine: block.endLine }
           });
-        });
+        }
       }
     });
 
@@ -400,10 +375,6 @@ export function getWebviewContent(placeholder: string): string {
       vscode.postMessage({ type: 'copyAndClose' });
     });
 
-    btnStash.addEventListener('click', function() {
-      vscode.postMessage({ type: 'stashAndClose' });
-    });
-
     btnClear.addEventListener('click', function() {
       vscode.postMessage({ type: 'clearStash' });
     });
@@ -412,10 +383,6 @@ export function getWebviewContent(placeholder: string): string {
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
         e.preventDefault();
         vscode.postMessage({ type: 'copyAndClose' });
-      }
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        vscode.postMessage({ type: 'stashAndClose' });
       }
     });
 

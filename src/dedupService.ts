@@ -1,40 +1,5 @@
 import { CodeBlock } from "./types";
 
-export type DedupResult =
-  | { action: "added"; block: CodeBlock }
-  | { action: "skipped"; reason: "duplicate" | "contained"; existingBlock: CodeBlock }
-  | { action: "merged"; originalBlock: CodeBlock; mergedBlock: CodeBlock };
-
-export function deduplicateBlock(existingBlocks: CodeBlock[], newBlock: CodeBlock): DedupResult {
-  const sameFileBlocks = existingBlocks.filter((b) => b.filePath === newBlock.filePath);
-
-  for (const existing of sameFileBlocks) {
-    if (existing.startLine === newBlock.startLine && existing.endLine === newBlock.endLine) {
-      return { action: "skipped", reason: "duplicate", existingBlock: existing };
-    }
-
-    if (newBlock.startLine >= existing.startLine && newBlock.endLine <= existing.endLine) {
-      return { action: "skipped", reason: "contained", existingBlock: existing };
-    }
-
-    const overlaps =
-      (newBlock.startLine >= existing.startLine && newBlock.startLine <= existing.endLine) ||
-      (newBlock.endLine >= existing.startLine && newBlock.endLine <= existing.endLine) ||
-      (newBlock.startLine <= existing.startLine && newBlock.endLine >= existing.endLine);
-
-    if (overlaps) {
-      const mergedBlock: CodeBlock = {
-        ...existing,
-        startLine: Math.min(existing.startLine, newBlock.startLine),
-        endLine: Math.max(existing.endLine, newBlock.endLine),
-      };
-      return { action: "merged", originalBlock: existing, mergedBlock };
-    }
-  }
-
-  return { action: "added", block: newBlock };
-}
-
 export function assignColorIndex(blocks: CodeBlock[], filePath: string): number {
   const existingColors = blocks
     .filter((b) => b.filePath === filePath)
@@ -56,29 +21,44 @@ export function assignColorIndex(blocks: CodeBlock[], filePath: string): number 
 export function formatOutput(blocks: CodeBlock[], prompt?: string): string {
   const lines: string[] = [];
 
-  if (prompt && prompt.trim()) {
-    lines.push(prompt.trim());
-    lines.push("");
-  }
-
-  const fileGroups = new Map<string, { fileName: string; blocks: CodeBlock[] }>();
+  const fileGroups = new Map<string, { fileName: string; blocks: CodeBlock[]; description?: string }>();
   for (const block of blocks) {
     const group = fileGroups.get(block.filePath);
     if (group) {
       group.blocks.push(block);
     } else {
-      fileGroups.set(block.filePath, { fileName: block.fileName, blocks: [block] });
+      fileGroups.set(block.filePath, {
+        fileName: block.fileName,
+        blocks: [block],
+        description: block.description,
+      });
     }
   }
 
   for (const [, group] of fileGroups) {
     for (const block of group.blocks) {
-      if (block.startLine === block.endLine) {
+      if (block.startLine === 0 && block.endLine === 0) {
+        lines.push(group.fileName);
+      } else if (block.startLine === block.endLine) {
         lines.push(`${group.fileName}:${block.startLine}`);
       } else {
         lines.push(`${group.fileName}:${block.startLine}-${block.endLine}`);
       }
     }
+
+    if (group.description && group.description.trim()) {
+      lines.push(group.description.trim());
+    }
+
+    lines.push("");
+  }
+
+  if (prompt && prompt.trim()) {
+    lines.push(prompt.trim());
+  }
+
+  while (lines.length > 0 && lines[lines.length - 1] === "") {
+    lines.pop();
   }
 
   return lines.join("\n");

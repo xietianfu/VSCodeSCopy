@@ -9,26 +9,13 @@ export function getHistoryWebviewContent(): string {
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
   <title>Easy Copy History</title>
   <style nonce="${nonce}">
-    :root {
-      --bg: var(--vscode-sideBar-background);
-      --fg: var(--vscode-sideBar-foreground);
-      --border: var(--vscode-sideBar-border, rgba(255,255,255,0.08));
-      --input-bg: var(--vscode-input-background);
-      --input-fg: var(--vscode-input-foreground);
-      --input-border: var(--vscode-input-border, rgba(255,255,255,0.1));
-      --btn-bg: var(--vscode-button-background);
-      --btn-fg: var(--vscode-button-foreground);
-      --btn-hover: var(--vscode-button-hoverBackground);
-      --danger: #f44747;
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: var(--vscode-font-family);
-      font-size: var(--vscode-font-size);
-      color: var(--fg);
-      background: var(--bg);
+      font-family: var(--vscode-font-family, sans-serif);
+      font-size: var(--vscode-font-size, 13px);
+      color: var(--vscode-foreground, #cccccc);
+      background: var(--vscode-sideBar-background, var(--vscode-editor-background, #1e1e1e));
       padding: 8px;
     }
 
@@ -38,31 +25,35 @@ export function getHistoryWebviewContent(): string {
       justify-content: space-between;
       margin-bottom: 10px;
       padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--vscode-sideBar-border, var(--vscode-panel-border, rgba(128,128,128,0.35)));
     }
 
-    .header h2 { font-size: 13px; font-weight: 600; }
+    .header h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--vscode-foreground, #cccccc);
+    }
 
     .search-input {
       width: 100%;
       padding: 5px 8px;
       border-radius: 4px;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
-      color: var(--input-fg);
-      font-family: var(--vscode-font-family);
-      font-size: var(--vscode-font-size);
+      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+      background: var(--vscode-input-background, rgba(255, 255, 255, 0.05));
+      color: var(--vscode-input-foreground, var(--vscode-foreground, #cccccc));
+      font-family: var(--vscode-font-family, sans-serif);
+      font-size: var(--vscode-font-size, 13px);
       outline: none;
       margin-bottom: 10px;
     }
 
-    .search-input:focus { border-color: var(--vscode-focusBorder); }
-    .search-input::placeholder { color: var(--vscode-descriptionForeground); }
+    .search-input:focus { border-color: var(--vscode-focusBorder, #007fd4); }
+    .search-input::placeholder { color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.5)); }
 
     .empty-state {
       text-align: center;
       padding: 24px 12px;
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
       font-size: 12px;
     }
 
@@ -76,11 +67,11 @@ export function getHistoryWebviewContent(): string {
       cursor: pointer;
       font-size: 12px;
       font-weight: 600;
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
       user-select: none;
     }
 
-    .project-header:hover { color: var(--fg); }
+    .project-header:hover { color: var(--vscode-foreground, #cccccc); }
     .project-header .arrow { font-size: 10px; transition: transform 0.15s; }
     .project-header.collapsed .arrow { transform: rotate(-90deg); }
 
@@ -88,8 +79,8 @@ export function getHistoryWebviewContent(): string {
     .project-records.hidden { display: none; }
 
     .record-card {
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
+      background: var(--vscode-input-background, rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
       border-radius: 4px;
       padding: 8px;
       animation: fadeIn 0.2s ease;
@@ -97,13 +88,13 @@ export function getHistoryWebviewContent(): string {
 
     .record-time {
       font-size: 10px;
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
       margin-bottom: 4px;
     }
 
     .record-prompt {
       font-size: 11px;
-      color: var(--fg);
+      color: var(--vscode-foreground, #cccccc);
       margin-bottom: 4px;
       white-space: nowrap;
       overflow: hidden;
@@ -112,7 +103,7 @@ export function getHistoryWebviewContent(): string {
 
     .record-files {
       font-size: 11px;
-      color: var(--vscode-descriptionForeground);
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
       line-height: 1.5;
       margin-bottom: 6px;
     }
@@ -125,9 +116,9 @@ export function getHistoryWebviewContent(): string {
 
     .record-btn {
       background: none;
-      border: 1px solid var(--border);
-      color: var(--vscode-descriptionForeground);
-      font-family: var(--vscode-font-family);
+      border: 1px solid var(--vscode-sideBar-border, var(--vscode-panel-border, rgba(128,128,128,0.35)));
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
+      font-family: var(--vscode-font-family, sans-serif);
       font-size: 11px;
       padding: 2px 8px;
       border-radius: 3px;
@@ -135,8 +126,14 @@ export function getHistoryWebviewContent(): string {
       transition: all 0.15s;
     }
 
-    .record-btn:hover { background: rgba(255,255,255,0.05); color: var(--fg); }
-    .record-btn.delete:hover { background: rgba(244,71,71,0.1); color: var(--danger); }
+    .record-btn:hover {
+      background: rgba(128, 128, 128, 0.15);
+      color: var(--vscode-foreground, #cccccc);
+    }
+    .record-btn.delete:hover {
+      background: rgba(244,71,71,0.1);
+      color: #f44747;
+    }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(2px); }
@@ -179,6 +176,7 @@ export function getHistoryWebviewContent(): string {
 
     function formatBlockLines(blocks) {
       return blocks.map(function(b) {
+        if (b.startLine === 0 && b.endLine === 0) return escapeHtml(b.fileName);
         var lineInfo = b.startLine === b.endLine ? '' + b.startLine : b.startLine + '-' + b.endLine;
         return escapeHtml(b.fileName) + ':' + lineInfo;
       }).join('<br>');

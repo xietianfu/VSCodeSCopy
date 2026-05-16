@@ -113,6 +113,19 @@ export class StorageService {
     return this.saveData(data);
   }
 
+  updateBlockDescription(filePath: string, startLine: number, endLine: number, description: string): Thenable<void> {
+    const data = this.loadData();
+    if (data.currentStash) {
+      for (const block of data.currentStash.blocks) {
+        if (block.filePath === filePath && block.startLine === startLine && block.endLine === endLine) {
+          block.description = description;
+          break;
+        }
+      }
+    }
+    return this.saveData(data);
+  }
+
   generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
