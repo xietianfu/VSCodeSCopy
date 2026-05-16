@@ -3,6 +3,7 @@ import { CodeBlock } from "./types";
 import { ProjectService } from "./projectService";
 import { StorageService } from "./storageService";
 import { assignColorIndex } from "./dedupService";
+import { t } from "./i18n";
 
 export class CollectService {
   private projectService: ProjectService;
@@ -49,7 +50,7 @@ export class CollectService {
 
     await this.storageService.addBlockToStash(newBlock);
     const lineInfo = startLine === endLine ? `${startLine}` : `${startLine}-${endLine}`;
-    vscode.window.showInformationMessage(`已收集 ${fileName}:${lineInfo}`);
+    vscode.window.showInformationMessage(`${t("collected")} ${fileName}:${lineInfo}`);
     return newBlock;
   }
 

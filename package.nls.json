@@ -1,0 +1,18 @@
+{
+  "displayName": "S Copy",
+  "description": "快速收集代码位置，批量反馈给 AI CLI 进行精准修复",
+  "viewsContainers.activitybar.title": "S Copy",
+  "views.sCopySidebar.name": "代码收集",
+  "views.sCopyHistory.name": "历史记录",
+  "commands.collect.title": "+ 收集",
+  "commands.collectFromExplorer.title": "+ 收集",
+  "commands.openPanel.title": "打开收集面板",
+  "commands.clearStash.title": "清空暂存",
+  "commands.category": "S Copy",
+  "configuration.title": "S Copy",
+  "configuration.historyLimit.description": "历史记录最大条数",
+  "configuration.colors.description": "代码块色块颜色列表",
+  "configuration.promptPlaceholder.description": "汇总说明输入框占位文本",
+  "configuration.promptPlaceholder.default": "例如：修复类型错误，检查边界情况...",
+  "configuration.showWelcome.description": "首次使用时显示欢迎引导"
+}

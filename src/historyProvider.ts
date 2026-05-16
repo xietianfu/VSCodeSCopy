@@ -4,6 +4,7 @@ import { StorageService } from "./storageService";
 import { ProjectService } from "./projectService";
 import { formatOutput } from "./dedupService";
 import { getHistoryWebviewContent } from "./historyWebviewContent";
+import { t, getHistoryStrings } from "./i18n";
 
 export class HistoryProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sCopyHistory";
@@ -31,7 +32,7 @@ export class HistoryProvider implements vscode.WebviewViewProvider {
       localResourceRoots: [],
     };
 
-    webviewView.webview.html = getHistoryWebviewContent();
+    webviewView.webview.html = getHistoryWebviewContent(getHistoryStrings());
 
     webviewView.webview.onDidReceiveMessage(async (message: WebviewMessage) => {
       await this.handleMessage(message);
@@ -62,6 +63,7 @@ export class HistoryProvider implements vscode.WebviewViewProvider {
     const state: HistoryWebviewState = {
       records,
       projectNameMap,
+      strings: getHistoryStrings(),
     };
 
     this.view.webview.postMessage({ type: "updateHistory", payload: state });
@@ -76,7 +78,7 @@ export class HistoryProvider implements vscode.WebviewViewProvider {
         if (record) {
           const output = formatOutput(record.blocks, record.prompt);
           await vscode.env.clipboard.writeText(output);
-          vscode.window.showInformationMessage("✓ 已复制历史记录到剪贴板");
+          vscode.window.showInformationMessage(t("copiedHistory"));
         }
         break;
       }

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { StorageService } from "./storageService";
+import { t } from "./i18n";
 
 export class StatusBarService {
   private statusBarItem: vscode.StatusBarItem;
@@ -22,10 +23,10 @@ export class StatusBarService {
 
     if (count > 0) {
       this.statusBarItem.text = `📋 ${count}`;
-      this.statusBarItem.tooltip = `S Copy: ${count} 个代码块已暂存（点击打开）`;
+      this.statusBarItem.tooltip = t("statusBarTooltipWithCount", count);
     } else {
       this.statusBarItem.text = "📋";
-      this.statusBarItem.tooltip = "S Copy（点击打开面板）";
+      this.statusBarItem.tooltip = t("statusBarTooltip");
     }
     this.statusBarItem.show();
   }

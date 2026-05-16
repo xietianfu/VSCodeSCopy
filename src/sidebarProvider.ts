@@ -4,6 +4,7 @@ import { StorageService } from "./storageService";
 import { ProjectService } from "./projectService";
 import { formatOutput } from "./dedupService";
 import { getWebviewContent } from "./webviewContent";
+import { t, getWebviewStrings } from "./i18n";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sCopySidebar";
@@ -69,6 +70,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       blocks: stash?.blocks || [],
       prompt: stash?.prompt || "",
       colors,
+      strings: getWebviewStrings(),
     };
 
     this.view.webview.postMessage({ type: "updateState", payload: state });
@@ -128,7 +130,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   private async handleCopy() {
     const stash = this.storageService.getStash();
     if (!stash || stash.blocks.length === 0) {
-      vscode.window.showWarningMessage("没有收集的代码块");
+      vscode.window.showWarningMessage(t("noBlocks"));
       return;
     }
 
@@ -146,6 +148,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       this.view.webview.postMessage({ type: "copySuccess" });
     }
 
+    vscode.window.showInformationMessage(t("copiedToClipboard"));
     this.updateView();
     this.fireChange();
   }
@@ -154,9 +157,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const config = vscode.workspace.getConfiguration("s-copy");
     const placeholder = config.get<string>(
       "promptPlaceholder",
-      "例如：修复类型错误，检查边界情况..."
+      t("summaryLabel")
     );
-    return getWebviewContent(placeholder);
+    return getWebviewContent(placeholder, getWebviewStrings());
   }
 
   private fireChange() {

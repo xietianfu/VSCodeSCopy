@@ -48,9 +48,11 @@ export interface WebviewState {
   blocks: CodeBlock[];
   prompt: string;
   colors: string[];
+  strings: Record<string, string>;
 }
 
 export interface HistoryWebviewState {
   records: HistoryRecord[];
   projectNameMap: Record<string, string>;
+  strings: Record<string, string>;
 }

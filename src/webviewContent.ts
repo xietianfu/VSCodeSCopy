@@ -1,8 +1,9 @@
-export function getWebviewContent(placeholder: string): string {
+export function getWebviewContent(placeholder: string, strings: Record<string, string>): string {
   const nonce = getNonce();
+  const s = strings;
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -209,19 +210,19 @@ export function getWebviewContent(placeholder: string): string {
 </head>
 <body>
   <div class="header">
-    <h2>已收集<span class="count" id="blockCount">0</span></h2>
+    <h2 id="panelTitle">${escapeHtml(s.panelTitle.replace("{0}", "0"))}</h2>
   </div>
 
   <div id="emptyState" class="empty-state">
     <div class="icon">📝</div>
-    <div>暂无收集的代码块</div>
-    <div class="hint">选中代码后按 Cmd+; 收集</div>
+    <div>${escapeHtml(s.panelEmpty)}</div>
+    <div class="hint">${escapeHtml(s.panelHint)}</div>
   </div>
 
   <div id="blockList" class="block-list"></div>
 
   <div class="prompt-section">
-    <div class="prompt-label">💬 汇总说明（可选）</div>
+    <div class="prompt-label">${escapeHtml(s.summaryLabel)}</div>
     <textarea
       id="promptInput"
       class="prompt-input"
@@ -230,8 +231,8 @@ export function getWebviewContent(placeholder: string): string {
   </div>
 
   <div class="actions">
-    <button id="btnClear" class="btn btn-clear" title="清空所有">清空</button>
-    <button id="btnCopy" class="btn btn-copy">✓ 完成并复制</button>
+    <button id="btnClear" class="btn btn-clear">${escapeHtml(s.btnClear)}</button>
+    <button id="btnCopy" class="btn btn-copy">${escapeHtml(s.btnCopy)}</button>
   </div>
 
   <div id="copyCountdown" class="copy-countdown"></div>
@@ -241,10 +242,11 @@ export function getWebviewContent(placeholder: string): string {
     var currentBlocks = [];
     var currentPrompt = '';
     var colors = ['#4A90E2', '#F5A623', '#7ED321', '#BD10E0', '#8B572A'];
+    var strings = ${JSON.stringify(s)};
 
     var blockList = document.getElementById('blockList');
     var emptyState = document.getElementById('emptyState');
-    var blockCount = document.getElementById('blockCount');
+    var panelTitle = document.getElementById('panelTitle');
     var promptInput = document.getElementById('promptInput');
     var btnCopy = document.getElementById('btnCopy');
     var btnClear = document.getElementById('btnClear');
@@ -255,19 +257,19 @@ export function getWebviewContent(placeholder: string): string {
     }
 
     function render() {
-      blockCount.textContent = currentBlocks.length;
+      panelTitle.textContent = strings.panelTitle.replace('{0}', currentBlocks.length);
       emptyState.style.display = currentBlocks.length === 0 ? 'block' : 'none';
       btnCopy.disabled = currentBlocks.length === 0;
 
       blockList.innerHTML = '';
 
       currentBlocks.forEach(function(block, idx) {
-        var warnIcon = block.isUntitled ? '<span class="warn-icon" title="未保存文件">⚠</span>' : '';
+        var warnIcon = block.isUntitled ? '<span class="warn-icon">⚠</span>' : '';
         var icon = block.isDirectory ? '📁' : '📄';
 
         var lineInfo = '';
         if (block.startLine === 0 && block.endLine === 0) {
-          lineInfo = '';
+          lineInfo = ' ' + strings.wholeFile;
         } else if (block.startLine === block.endLine) {
           lineInfo = ':' + block.startLine;
         } else {
@@ -281,9 +283,9 @@ export function getWebviewContent(placeholder: string): string {
           '<div class="block-item">' +
             '<span class="block-icon">' + icon + '</span>' +
             '<div class="block-location">' + warnIcon + escapeHtml(block.fileName) + lineInfo + '</div>' +
-            '<button class="block-remove" data-idx="' + idx + '" title="移除">×</button>' +
+            '<button class="block-remove" data-idx="' + idx + '" title="Remove">×</button>' +
           '</div>' +
-          '<input type="text" class="file-desc-input" data-blockidx="' + idx + '" placeholder="添加说明（可选）" value="' + escapeHtml(block.description || '') + '">';
+          '<input type="text" class="file-desc-input" data-blockidx="' + idx + '" placeholder="' + escapeHtml(strings.descPlaceholder) + '" value="' + escapeHtml(block.description || '') + '">';
 
         blockList.appendChild(card);
       });
@@ -314,7 +316,7 @@ export function getWebviewContent(placeholder: string): string {
 
     function startCountdown(seconds) {
       var remaining = seconds;
-      copyCountdown.textContent = '✓ 已复制 (' + remaining + 's)';
+      copyCountdown.textContent = strings.copyCountdown.replace('{0}', remaining);
       copyCountdown.classList.add('show');
       var timer = setInterval(function() {
         remaining--;
@@ -322,7 +324,7 @@ export function getWebviewContent(placeholder: string): string {
           clearInterval(timer);
           copyCountdown.classList.remove('show');
         } else {
-          copyCountdown.textContent = '✓ 已复制 (' + remaining + 's)';
+          copyCountdown.textContent = strings.copyCountdown.replace('{0}', remaining);
         }
       }, 1000);
     }
@@ -334,6 +336,7 @@ export function getWebviewContent(placeholder: string): string {
         currentBlocks = payload.blocks || [];
         colors = payload.colors || colors;
         currentPrompt = payload.prompt || '';
+        if (payload.strings) { strings = payload.strings; }
         if (document.activeElement !== promptInput) {
           promptInput.value = currentPrompt;
         }

@@ -1,8 +1,9 @@
-export function getHistoryWebviewContent(): string {
+export function getHistoryWebviewContent(strings: Record<string, string>): string {
   const nonce = getNonce();
+  const s = strings;
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -142,9 +143,13 @@ export function getHistoryWebviewContent(): string {
   </style>
 </head>
 <body>
-  <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜索历史记录...">
+  <div class="header">
+    <h2>${escapeHtml(s.historyTitle)}</h2>
+  </div>
 
-  <div id="emptyState" class="empty-state">暂无历史记录</div>
+  <input type="text" id="searchInput" class="search-input" placeholder="${escapeHtml(s.historySearch)}">
+
+  <div id="emptyState" class="empty-state">${escapeHtml(s.historyEmpty)}</div>
   <div id="historyList"></div>
 
   <script nonce="${nonce}">
@@ -152,6 +157,7 @@ export function getHistoryWebviewContent(): string {
     var allRecords = [];
     var projectNameMap = {};
     var searchTerm = '';
+    var strings = ${JSON.stringify(s)};
 
     var historyList = document.getElementById('historyList');
     var emptyState = document.getElementById('emptyState');
@@ -165,9 +171,10 @@ export function getHistoryWebviewContent(): string {
       var d = new Date(ts);
       var now = new Date();
       var diffDays = Math.floor((now - d) / 86400000);
-      if (diffDays === 0) return '今天 ' + d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
-      if (diffDays === 1) return '昨天 ' + d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
-      return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+      var time = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+      if (diffDays === 0) return strings.historyToday + ' ' + time;
+      if (diffDays === 1) return strings.historyYesterday + ' ' + time;
+      return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + time;
     }
 
     function formatBlockLines(blocks) {
@@ -207,7 +214,7 @@ export function getHistoryWebviewContent(): string {
         var pName = projectNameMap[pid] || pid;
         var header = document.createElement('div');
         header.className = 'project-header';
-        header.innerHTML = '<span class="arrow">▼</span> 项目 ' + escapeHtml(pName);
+        header.innerHTML = '<span class="arrow">▼</span> ' + escapeHtml(strings.historyProject) + ' ' + escapeHtml(pName);
         header.addEventListener('click', function() {
           header.classList.toggle('collapsed');
           records.classList.toggle('hidden');
@@ -228,8 +235,8 @@ export function getHistoryWebviewContent(): string {
             promptHtml +
             '<div class="record-files">' + formatBlockLines(record.blocks) + '</div>' +
             '<div class="record-actions">' +
-              '<button class="record-btn copy-btn" data-id="' + record.id + '">再次复制</button>' +
-              '<button class="record-btn delete delete-btn" data-id="' + record.id + '">删除</button>' +
+              '<button class="record-btn copy-btn" data-id="' + record.id + '">' + escapeHtml(strings.btnRecopy) + '</button>' +
+              '<button class="record-btn delete delete-btn" data-id="' + record.id + '">' + escapeHtml(strings.btnDelete) + '</button>' +
             '</div>';
 
           records.appendChild(card);
@@ -246,6 +253,7 @@ export function getHistoryWebviewContent(): string {
         var payload = message.payload;
         allRecords = payload.records || [];
         projectNameMap = payload.projectNameMap || {};
+        if (payload.strings) { strings = payload.strings; }
         render();
       }
     });
@@ -281,4 +289,12 @@ function getNonce(): string {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return result;
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }

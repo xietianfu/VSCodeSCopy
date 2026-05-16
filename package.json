@@ -1,10 +1,19 @@
 {
   "name": "s-copy",
-  "displayName": "S Copy",
-  "description": "快速收集代码位置，批量反馈给 AI CLI 进行精准修复",
+  "displayName": "%displayName%",
+  "description": "%description%",
   "version": "0.1.0",
-  "publisher": "s-copy",
+  "publisher": "xietf",
   "icon": "logo.png",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xietf/VSCodeSCopy"
+  },
+  "bugs": {
+    "url": "https://github.com/xietf/VSCodeSCopy/issues"
+  },
+  "homepage": "https://github.com/xietf/VSCodeSCopy#readme",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -21,7 +30,7 @@
       "activitybar": [
         {
           "id": "s-copy",
-          "title": "S Copy",
+          "title": "%viewsContainers.activitybar.title%",
           "icon": "resources/icon.svg"
         }
       ]
@@ -31,35 +40,35 @@
         {
           "type": "webview",
           "id": "sCopySidebar",
-          "name": "代码收集"
+          "name": "%views.sCopySidebar.name%"
         },
         {
           "type": "webview",
           "id": "sCopyHistory",
-          "name": "历史记录"
+          "name": "%views.sCopyHistory.name%"
         }
       ]
     },
     "commands": [
       {
         "command": "s-copy.collect",
-        "title": "+ 收集",
-        "category": "S Copy"
+        "title": "%commands.collect.title%",
+        "category": "%commands.category%"
       },
       {
         "command": "s-copy.collectFromExplorer",
-        "title": "+ 收集",
-        "category": "S Copy"
+        "title": "%commands.collectFromExplorer.title%",
+        "category": "%commands.category%"
       },
       {
         "command": "s-copy.openPanel",
-        "title": "打开收集面板",
-        "category": "S Copy"
+        "title": "%commands.openPanel.title%",
+        "category": "%commands.category%"
       },
       {
         "command": "s-copy.clearStash",
-        "title": "清空暂存",
-        "category": "S Copy"
+        "title": "%commands.clearStash.title%",
+        "category": "%commands.category%"
       }
     ],
     "keybindings": [
@@ -93,12 +102,12 @@
       ]
     },
     "configuration": {
-      "title": "S Copy",
+      "title": "%configuration.title%",
       "properties": {
         "s-copy.historyLimit": {
           "type": "number",
           "default": 50,
-          "description": "历史记录最大条数"
+          "description": "%configuration.historyLimit.description%"
         },
         "s-copy.colors": {
           "type": "array",
@@ -106,17 +115,17 @@
             "type": "string"
           },
           "default": ["#4A90E2", "#F5A623", "#7ED321", "#BD10E0", "#8B572A"],
-          "description": "代码块色块颜色列表"
+          "description": "%configuration.colors.description%"
         },
         "s-copy.promptPlaceholder": {
           "type": "string",
-          "default": "例如：修复类型错误，检查边界情况...",
-          "description": "AI 提示输入框占位文本"
+          "default": "%configuration.promptPlaceholder.default%",
+          "description": "%configuration.promptPlaceholder.description%"
         },
         "s-copy.showWelcome": {
           "type": "boolean",
           "default": true,
-          "description": "首次使用时显示欢迎引导"
+          "description": "%configuration.showWelcome.description%"
         }
       }
     }

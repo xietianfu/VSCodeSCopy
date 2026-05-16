@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { initLocale, t } from "./i18n";
 import { StorageService } from "./storageService";
 import { ProjectService } from "./projectService";
 import { CollectService } from "./collectService";
@@ -7,6 +8,8 @@ import { HistoryProvider } from "./historyProvider";
 import { StatusBarService } from "./statusBarService";
 
 export function activate(context: vscode.ExtensionContext) {
+  initLocale();
+
   const storageService = new StorageService(context);
   const projectService = new ProjectService();
   const collectService = new CollectService(projectService, storageService);
@@ -45,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
     async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
-        vscode.window.showWarningMessage("请先打开一个文件");
+        vscode.window.showWarningMessage(t("openFileFirst"));
         return;
       }
 
@@ -59,13 +62,13 @@ export function activate(context: vscode.ExtensionContext) {
     async (clickedUri: vscode.Uri, selectedUris: vscode.Uri[]) => {
       const uris = selectedUris && selectedUris.length > 0 ? selectedUris : clickedUri ? [clickedUri] : [];
       if (uris.length === 0) {
-        vscode.window.showWarningMessage("请先选中文件或文件夹");
+        vscode.window.showWarningMessage(t("selectFileOrFolder"));
         return;
       }
 
       const added = await collectService.collectFromUris(uris);
       if (added > 0) {
-        vscode.window.showInformationMessage(`已收集 ${added} 个文件/文件夹`);
+        vscode.window.showInformationMessage(t("collectedCount", added));
       }
       refreshAll();
     }
@@ -83,7 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
     async () => {
       await storageService.clearStash();
       refreshAll();
-      vscode.window.showInformationMessage("已清空暂存");
+      vscode.window.showInformationMessage(t("stashCleared"));
     }
   );
 

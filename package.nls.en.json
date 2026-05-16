@@ -1,0 +1,18 @@
+{
+  "displayName": "S Copy",
+  "description": "Quickly collect code locations and batch feedback to AI CLI for precise fixes",
+  "viewsContainers.activitybar.title": "S Copy",
+  "views.sCopySidebar.name": "Code Collection",
+  "views.sCopyHistory.name": "History",
+  "commands.collect.title": "+ Collect",
+  "commands.collectFromExplorer.title": "+ Collect",
+  "commands.openPanel.title": "Open Collection Panel",
+  "commands.clearStash.title": "Clear Stash",
+  "commands.category": "S Copy",
+  "configuration.title": "S Copy",
+  "configuration.historyLimit.description": "Maximum number of history records",
+  "configuration.colors.description": "Code block color list",
+  "configuration.promptPlaceholder.description": "Summary description input placeholder",
+  "configuration.promptPlaceholder.default": "e.g. Fix type errors, check edge cases...",
+  "configuration.showWelcome.description": "Show welcome guide on first use"
+}
