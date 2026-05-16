@@ -1,0 +1,101 @@
+{
+  "name": "easy-copy",
+  "displayName": "Easy Copy",
+  "description": "快速收集代码位置，批量反馈给 AI CLI 进行精准修复",
+  "version": "0.1.0",
+  "publisher": "easy-copy",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:easy-copy.collect"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "easy-copy.collect",
+        "title": "+ 收集",
+        "category": "Easy Copy"
+      },
+      {
+        "command": "easy-copy.openPanel",
+        "title": "打开收集面板",
+        "category": "Easy Copy"
+      },
+      {
+        "command": "easy-copy.clearStash",
+        "title": "清空暂存",
+        "category": "Easy Copy"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "easy-copy.collect",
+        "key": "cmd+;",
+        "mac": "cmd+;",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-copy.collect",
+        "key": "ctrl+;",
+        "win": "ctrl+;",
+        "linux": "ctrl+;",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "easy-copy.collect",
+          "when": "editorHasSelection",
+          "group": "9_cutcopypaste@100"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Easy Copy",
+      "properties": {
+        "easy-copy.historyLimit": {
+          "type": "number",
+          "default": 50,
+          "description": "历史记录最大条数"
+        },
+        "easy-copy.colors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["#4A90E2", "#F5A623", "#7ED321", "#BD10E0", "#8B572A"],
+          "description": "代码块色块颜色列表"
+        },
+        "easy-copy.promptPlaceholder": {
+          "type": "string",
+          "default": "例如：修复类型错误，检查边界情况...",
+          "description": "AI 提示输入框占位文本"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "lint": "eslint src --ext ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.0",
+    "webpack-cli": "^5.1.4",
+    "ts-loader": "^9.5.1",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0"
+  }
+}
