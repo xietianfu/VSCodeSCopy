@@ -11,10 +11,28 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:easy-copy.collect"
+    "onView:easyCopySidebar"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "easy-copy",
+          "title": "Easy Copy",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "easy-copy": [
+        {
+          "type": "webview",
+          "id": "easyCopySidebar",
+          "name": "代码收集"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "easy-copy.collect",

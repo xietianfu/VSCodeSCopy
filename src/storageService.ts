@@ -64,7 +64,7 @@ export class StorageService {
     return this.saveData(data);
   }
 
-  addBlockToStash(block: CodeBlock): Thenable<Collection> {
+  addBlockToStash(block: CodeBlock): Promise<Collection> {
     const data = this.loadData();
     let stash = data.currentStash;
 
@@ -80,10 +80,13 @@ export class StorageService {
 
     stash.blocks.push(block);
     data.currentStash = stash;
-    return this.saveData(data).then(() => stash);
+    const result = stash;
+    return new Promise<Collection>((resolve) => {
+      this.saveData(data).then(() => resolve(result));
+    });
   }
 
-  removeBlockFromStash(filePath: string, startLine: number, endLine: number): Thenable<Collection | null> {
+  removeBlockFromStash(filePath: string, startLine: number, endLine: number): Promise<Collection | null> {
     const data = this.loadData();
     if (!data.currentStash) {
       return Promise.resolve(null);
@@ -97,7 +100,9 @@ export class StorageService {
       data.currentStash = null;
     }
 
-    return this.saveData(data).then(() => data.currentStash);
+    return new Promise<Collection | null>((resolve) => {
+      this.saveData(data).then(() => resolve(data.currentStash));
+    });
   }
 
   updateStashPrompt(prompt: string): Thenable<void> {

@@ -10,9 +10,9 @@ export function getWebviewContent(placeholder: string): string {
   <title>Easy Copy</title>
   <style nonce="${nonce}">
     :root {
-      --bg: var(--vscode-editor-background);
-      --fg: var(--vscode-editor-foreground);
-      --border: var(--vscode-panel-border, rgba(255,255,255,0.1));
+      --bg: var(--vscode-sideBar-background);
+      --fg: var(--vscode-sideBar-foreground);
+      --border: var(--vscode-sideBar-border, rgba(255,255,255,0.08));
       --input-bg: var(--vscode-input-background);
       --input-fg: var(--vscode-input-foreground);
       --input-border: var(--vscode-input-border, rgba(255,255,255,0.1));
@@ -37,55 +37,64 @@ export function getWebviewContent(placeholder: string): string {
       font-size: var(--vscode-font-size);
       color: var(--fg);
       background: var(--bg);
-      padding: 12px;
-      min-height: 100vh;
+      padding: 8px;
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
       border-bottom: 1px solid var(--border);
     }
 
     .header h2 {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .header .count {
       color: var(--vscode-descriptionForeground);
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 400;
     }
 
     .empty-state {
       text-align: center;
-      padding: 32px 16px;
+      padding: 24px 12px;
       color: var(--vscode-descriptionForeground);
     }
 
     .empty-state .icon {
-      font-size: 32px;
-      margin-bottom: 8px;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .empty-state .hint {
+      font-size: 12px;
+      margin-top: 4px;
     }
 
     .block-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-bottom: 12px;
+      gap: 4px;
+      margin-bottom: 10px;
     }
 
     .block-item {
       display: flex;
       align-items: center;
-      padding: 8px 10px;
-      border-radius: 6px;
+      padding: 6px 8px;
+      border-radius: 4px;
       background: var(--input-bg);
       border: 1px solid var(--input-border);
       transition: background 0.15s;
+      animation: fadeIn 0.2s ease;
     }
 
     .block-item:hover {
@@ -96,7 +105,7 @@ export function getWebviewContent(placeholder: string): string {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      margin-right: 10px;
+      margin-right: 8px;
       flex-shrink: 0;
     }
 
@@ -107,7 +116,7 @@ export function getWebviewContent(placeholder: string): string {
 
     .block-file {
       font-weight: 600;
-      font-size: 13px;
+      font-size: 12px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -115,8 +124,8 @@ export function getWebviewContent(placeholder: string): string {
 
     .block-lines {
       color: var(--vscode-descriptionForeground);
-      font-size: 12px;
-      margin-top: 2px;
+      font-size: 11px;
+      margin-top: 1px;
     }
 
     .block-remove {
@@ -124,11 +133,12 @@ export function getWebviewContent(placeholder: string): string {
       border: none;
       color: var(--vscode-descriptionForeground);
       cursor: pointer;
-      font-size: 16px;
-      padding: 2px 6px;
-      border-radius: 4px;
+      font-size: 14px;
+      padding: 2px 4px;
+      border-radius: 3px;
       transition: all 0.15s;
       flex-shrink: 0;
+      line-height: 1;
     }
 
     .block-remove:hover {
@@ -137,26 +147,26 @@ export function getWebviewContent(placeholder: string): string {
     }
 
     .prompt-section {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .prompt-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--vscode-descriptionForeground);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .prompt-input {
       width: 100%;
-      padding: 8px 10px;
-      border-radius: 6px;
+      padding: 6px 8px;
+      border-radius: 4px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
       color: var(--input-fg);
       font-family: var(--vscode-font-family);
       font-size: var(--vscode-font-size);
       resize: vertical;
-      min-height: 60px;
+      min-height: 48px;
       outline: none;
       transition: border-color 0.15s;
     }
@@ -171,17 +181,17 @@ export function getWebviewContent(placeholder: string): string {
 
     .actions {
       display: flex;
-      gap: 8px;
-      margin-top: 12px;
+      gap: 6px;
+      margin-top: 8px;
     }
 
     .btn {
       flex: 1;
-      padding: 8px 16px;
-      border-radius: 6px;
+      padding: 6px 12px;
+      border-radius: 4px;
       border: none;
       font-family: var(--vscode-font-family);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.15s;
@@ -230,7 +240,7 @@ export function getWebviewContent(placeholder: string): string {
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.5);
       z-index: 100;
       justify-content: center;
       align-items: center;
@@ -242,23 +252,19 @@ export function getWebviewContent(placeholder: string): string {
     }
 
     .success-overlay .icon {
-      font-size: 48px;
-      margin-bottom: 8px;
+      font-size: 36px;
+      margin-bottom: 4px;
     }
 
     .success-overlay .text {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--success);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
+      from { opacity: 0; transform: translateY(2px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-
-    .block-item {
-      animation: fadeIn 0.2s ease;
     }
   </style>
 </head>
@@ -270,7 +276,7 @@ export function getWebviewContent(placeholder: string): string {
   <div id="emptyState" class="empty-state">
     <div class="icon">📝</div>
     <div>暂无收集的代码块</div>
-    <div style="font-size:12px;margin-top:4px;">选中代码后按 Cmd+; 收集</div>
+    <div class="hint">选中代码后按 Cmd+; 收集</div>
   </div>
 
   <div id="blockList" class="block-list"></div>
@@ -298,6 +304,7 @@ export function getWebviewContent(placeholder: string): string {
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
     let currentBlocks = [];
+    let currentPrompt = '';
     let colors = ['#4A90E2', '#F5A623', '#7ED321', '#BD10E0', '#8B572A'];
 
     const blockList = document.getElementById('blockList');
@@ -309,70 +316,65 @@ export function getWebviewContent(placeholder: string): string {
     const btnClear = document.getElementById('btnClear');
     const successOverlay = document.getElementById('successOverlay');
 
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
     function render() {
       blockCount.textContent = currentBlocks.length;
       emptyState.style.display = currentBlocks.length === 0 ? 'block' : 'none';
       btnCopy.disabled = currentBlocks.length === 0;
 
       blockList.innerHTML = '';
-      const fileGroups = {};
-      currentBlocks.forEach(function(block, index) {
-        if (!fileGroups[block.filePath]) {
-          fileGroups[block.filePath] = [];
-        }
-        fileGroups[block.filePath].push(block);
+
+      var idx = 0;
+      currentBlocks.forEach(function(block) {
+        var item = document.createElement('div');
+        item.className = 'block-item';
+
+        var lineInfo = block.startLine === block.endLine
+          ? '' + block.startLine
+          : block.startLine + '-' + block.endLine;
+
+        var color = colors[block.colorIndex % colors.length];
+
+        item.innerHTML =
+          '<div class="block-color" style="background:' + color + '"></div>' +
+          '<div class="block-info">' +
+            '<div class="block-file">' + escapeHtml(block.fileName) + '</div>' +
+            '<div class="block-lines">' + escapeHtml(lineInfo) + '</div>' +
+          '</div>' +
+          '<button class="block-remove" data-idx="' + idx + '" title="移除">×</button>';
+
+        blockList.appendChild(item);
+        idx++;
       });
-
-      Object.keys(fileGroups).forEach(function(filePath) {
-        const blocks = fileGroups[filePath];
-        const colorIdx = blocks[0].colorIndex;
-        const color = colors[colorIdx % colors.length];
-
-        blocks.forEach(function(block) {
-          const item = document.createElement('div');
-          item.className = 'block-item';
-
-          const lineInfo = block.startLine === block.endLine
-            ? '' + block.startLine
-            : block.startLine + '-' + block.endLine;
-
-          item.innerHTML =
-            '<div class="block-color" style="background:' + color + '"></div>' +
-            '<div class="block-info">' +
-              '<div class="block-file">' + escapeHtml(block.fileName) + '</div>' +
-              '<div class="block-lines">' + escapeHtml(lineInfo) + '</div>' +
-            '</div>' +
-            '<button class="block-remove" data-idx="' + index + '" title="移除">×</button>';
-
-          blockList.appendChild(item);
-        });
-      });
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     window.addEventListener('message', function(event) {
-      const message = event.data;
+      var message = event.data;
       if (message.type === 'updateState') {
-        const payload = message.payload;
+        var payload = message.payload;
         currentBlocks = payload.blocks || [];
         colors = payload.colors || colors;
+        currentPrompt = payload.prompt || '';
         if (document.activeElement !== promptInput) {
-          promptInput.value = payload.prompt || '';
+          promptInput.value = currentPrompt;
         }
         render();
       }
       if (message.type === 'copySuccess') {
         successOverlay.classList.add('show');
+        setTimeout(function() {
+          successOverlay.classList.remove('show');
+        }, 1500);
       }
     });
 
     blockList.addEventListener('click', function(e) {
       if (e.target.classList.contains('block-remove')) {
-        const idx = parseInt(e.target.dataset.idx);
-        const block = currentBlocks[idx];
+        var idx = parseInt(e.target.dataset.idx);
+        var block = currentBlocks[idx];
         if (block) {
           vscode.postMessage({
             type: 'removeBlock',
@@ -386,7 +388,7 @@ export function getWebviewContent(placeholder: string): string {
       }
     });
 
-    let promptTimer = null;
+    var promptTimer = null;
     promptInput.addEventListener('input', function() {
       clearTimeout(promptTimer);
       promptTimer = setTimeout(function() {
