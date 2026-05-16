@@ -209,7 +209,7 @@ export function getWebviewContent(placeholder: string): string {
 </head>
 <body>
   <div class="header">
-    <h2>📋 已收集 <span class="count" id="blockCount">0</span> 个代码块</h2>
+    <h2>已收集<span class="count" id="blockCount">0</span></h2>
   </div>
 
   <div id="emptyState" class="empty-state">
