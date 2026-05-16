@@ -7,7 +7,7 @@ export function getHistoryWebviewContent(): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
-  <title>Easy Copy History</title>
+  <title>S Copy History</title>
   <style nonce="${nonce}">
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -142,10 +142,6 @@ export function getHistoryWebviewContent(): string {
   </style>
 </head>
 <body>
-  <div class="header">
-    <h2>📋 代码审查历史</h2>
-  </div>
-
   <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜索历史记录...">
 
   <div id="emptyState" class="empty-state">暂无历史记录</div>

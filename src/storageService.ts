@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { CodeBlock, Collection, HistoryRecord, StorageData } from "./types";
 
-const STORAGE_KEY = "easyCopyStorage";
+const STORAGE_KEY = "sCopyStorage";
 
 export class StorageService {
   private context: vscode.ExtensionContext;
@@ -48,7 +48,7 @@ export class StorageService {
 
   addHistory(record: HistoryRecord): Thenable<void> {
     const data = this.loadData();
-    const config = vscode.workspace.getConfiguration("easy-copy");
+    const config = vscode.workspace.getConfiguration("s-copy");
     const limit = config.get<number>("historyLimit", 50);
 
     data.history.unshift(record);

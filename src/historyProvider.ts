@@ -6,7 +6,7 @@ import { formatOutput } from "./dedupService";
 import { getHistoryWebviewContent } from "./historyWebviewContent";
 
 export class HistoryProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "easyCopyHistory";
+  public static readonly viewType = "sCopyHistory";
   private view?: vscode.WebviewView;
   private storageService: StorageService;
   private projectService: ProjectService;

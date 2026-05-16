@@ -1,9 +1,10 @@
 {
-  "name": "easy-copy",
-  "displayName": "Easy Copy",
+  "name": "s-copy",
+  "displayName": "S Copy",
   "description": "快速收集代码位置，批量反馈给 AI CLI 进行精准修复",
   "version": "0.1.0",
-  "publisher": "easy-copy",
+  "publisher": "s-copy",
+  "icon": "logo.png",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -11,65 +12,65 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:easyCopySidebar",
-    "onView:easyCopyHistory"
+    "onView:sCopySidebar",
+    "onView:sCopyHistory"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "easy-copy",
-          "title": "Easy Copy",
+          "id": "s-copy",
+          "title": "S Copy",
           "icon": "resources/icon.svg"
         }
       ]
     },
     "views": {
-      "easy-copy": [
+      "s-copy": [
         {
           "type": "webview",
-          "id": "easyCopySidebar",
+          "id": "sCopySidebar",
           "name": "代码收集"
         },
         {
           "type": "webview",
-          "id": "easyCopyHistory",
+          "id": "sCopyHistory",
           "name": "历史记录"
         }
       ]
     },
     "commands": [
       {
-        "command": "easy-copy.collect",
+        "command": "s-copy.collect",
         "title": "+ 收集",
-        "category": "Easy Copy"
+        "category": "S Copy"
       },
       {
-        "command": "easy-copy.collectFromExplorer",
+        "command": "s-copy.collectFromExplorer",
         "title": "+ 收集",
-        "category": "Easy Copy"
+        "category": "S Copy"
       },
       {
-        "command": "easy-copy.openPanel",
+        "command": "s-copy.openPanel",
         "title": "打开收集面板",
-        "category": "Easy Copy"
+        "category": "S Copy"
       },
       {
-        "command": "easy-copy.clearStash",
+        "command": "s-copy.clearStash",
         "title": "清空暂存",
-        "category": "Easy Copy"
+        "category": "S Copy"
       }
     ],
     "keybindings": [
       {
-        "command": "easy-copy.collect",
+        "command": "s-copy.collect",
         "key": "cmd+;",
         "mac": "cmd+;",
         "when": "editorTextFocus"
       },
       {
-        "command": "easy-copy.collect",
+        "command": "s-copy.collect",
         "key": "ctrl+;",
         "win": "ctrl+;",
         "linux": "ctrl+;",
@@ -79,27 +80,27 @@
     "menus": {
       "editor/context": [
         {
-          "command": "easy-copy.collect",
+          "command": "s-copy.collect",
           "when": "editorHasSelection",
           "group": "9_cutcopypaste@100"
         }
       ],
       "explorer/context": [
         {
-          "command": "easy-copy.collectFromExplorer",
+          "command": "s-copy.collectFromExplorer",
           "group": "5_cutcopypaste@100"
         }
       ]
     },
     "configuration": {
-      "title": "Easy Copy",
+      "title": "S Copy",
       "properties": {
-        "easy-copy.historyLimit": {
+        "s-copy.historyLimit": {
           "type": "number",
           "default": 50,
           "description": "历史记录最大条数"
         },
-        "easy-copy.colors": {
+        "s-copy.colors": {
           "type": "array",
           "items": {
             "type": "string"
@@ -107,12 +108,12 @@
           "default": ["#4A90E2", "#F5A623", "#7ED321", "#BD10E0", "#8B572A"],
           "description": "代码块色块颜色列表"
         },
-        "easy-copy.promptPlaceholder": {
+        "s-copy.promptPlaceholder": {
           "type": "string",
           "default": "例如：修复类型错误，检查边界情况...",
           "description": "AI 提示输入框占位文本"
         },
-        "easy-copy.showWelcome": {
+        "s-copy.showWelcome": {
           "type": "boolean",
           "default": true,
           "description": "首次使用时显示欢迎引导"

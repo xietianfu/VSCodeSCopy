@@ -9,8 +9,8 @@ export class StatusBarService {
     this.storageService = storageService;
 
     this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    this.statusBarItem.command = "easy-copy.openPanel";
-    this.statusBarItem.name = "Easy Copy";
+    this.statusBarItem.command = "s-copy.openPanel";
+    this.statusBarItem.name = "S Copy";
 
     this.update();
     this.statusBarItem.show();
@@ -22,10 +22,10 @@ export class StatusBarService {
 
     if (count > 0) {
       this.statusBarItem.text = `📋 ${count}`;
-      this.statusBarItem.tooltip = `Easy Copy: ${count} 个代码块已暂存（点击打开）`;
+      this.statusBarItem.tooltip = `S Copy: ${count} 个代码块已暂存（点击打开）`;
     } else {
       this.statusBarItem.text = "📋";
-      this.statusBarItem.tooltip = "Easy Copy（点击打开面板）";
+      this.statusBarItem.tooltip = "S Copy（点击打开面板）";
     }
     this.statusBarItem.show();
   }

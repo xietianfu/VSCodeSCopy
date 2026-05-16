@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const collectCommand = vscode.commands.registerCommand(
-    "easy-copy.collect",
+    "s-copy.collect",
     async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -55,7 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const collectFromExplorerCommand = vscode.commands.registerCommand(
-    "easy-copy.collectFromExplorer",
+    "s-copy.collectFromExplorer",
     async (clickedUri: vscode.Uri, selectedUris: vscode.Uri[]) => {
       const uris = selectedUris && selectedUris.length > 0 ? selectedUris : clickedUri ? [clickedUri] : [];
       if (uris.length === 0) {
@@ -72,14 +72,14 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const openPanelCommand = vscode.commands.registerCommand(
-    "easy-copy.openPanel",
+    "s-copy.openPanel",
     () => {
       sidebarProvider.show();
     }
   );
 
   const clearStashCommand = vscode.commands.registerCommand(
-    "easy-copy.clearStash",
+    "s-copy.clearStash",
     async () => {
       await storageService.clearStash();
       refreshAll();

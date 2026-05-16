@@ -7,7 +7,7 @@ export function getWebviewContent(placeholder: string): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
-  <title>Easy Copy</title>
+  <title>S Copy</title>
   <style nonce="${nonce}">
     * { margin: 0; padding: 0; box-sizing: border-box; }
 

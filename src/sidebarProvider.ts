@@ -6,7 +6,7 @@ import { formatOutput } from "./dedupService";
 import { getWebviewContent } from "./webviewContent";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "easyCopySidebar";
+  public static readonly viewType = "sCopySidebar";
   private view?: vscode.WebviewView;
   private storageService: StorageService;
   private projectService: ProjectService;
@@ -56,7 +56,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     }
 
     const stash = this.storageService.getStash();
-    const config = vscode.workspace.getConfiguration("easy-copy");
+    const config = vscode.workspace.getConfiguration("s-copy");
     const colors = config.get<string[]>("colors", [
       "#4A90E2",
       "#F5A623",
@@ -151,7 +151,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   private getHtml(): string {
-    const config = vscode.workspace.getConfiguration("easy-copy");
+    const config = vscode.workspace.getConfiguration("s-copy");
     const placeholder = config.get<string>(
       "promptPlaceholder",
       "例如：修复类型错误，检查边界情况..."
