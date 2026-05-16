@@ -6,6 +6,7 @@ export interface CodeBlock {
   colorIndex: number;
   projectId: string;
   isUntitled: boolean;
+  isDirectory: boolean;
   description?: string;
 }
 

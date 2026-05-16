@@ -55,26 +55,29 @@ export function getWebviewContent(placeholder: string): string {
     .block-list {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 6px;
       margin-bottom: 10px;
+    }
+
+    .block-card {
+      border-radius: 4px;
+      background: var(--vscode-input-background, rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+      overflow: hidden;
+      animation: fadeIn 0.2s ease;
     }
 
     .block-item {
       display: flex;
       align-items: center;
-      padding: 4px 8px;
-      border-radius: 4px;
-      background: var(--vscode-input-background, rgba(255, 255, 255, 0.05));
-      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+      padding: 5px 8px;
       gap: 6px;
-      animation: fadeIn 0.2s ease;
     }
 
-    .block-color {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+    .block-icon {
+      font-size: 13px;
       flex-shrink: 0;
+      line-height: 1;
     }
 
     .block-location {
@@ -111,8 +114,8 @@ export function getWebviewContent(placeholder: string): string {
 
     .file-desc-input {
       display: block;
-      width: calc(100% - 16px);
-      margin: 1px 8px 4px 20px;
+      width: calc(100% - 32px);
+      margin: 0 8px 6px 24px;
       padding: 3px 6px;
       border-radius: 3px;
       border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
@@ -258,10 +261,9 @@ export function getWebviewContent(placeholder: string): string {
 
       blockList.innerHTML = '';
 
-      var lastFilePath = null;
       currentBlocks.forEach(function(block, idx) {
-        var color = colors[block.colorIndex % colors.length];
         var warnIcon = block.isUntitled ? '<span class="warn-icon" title="未保存文件">⚠</span>' : '';
+        var icon = block.isDirectory ? '📁' : '📄';
 
         var lineInfo = '';
         if (block.startLine === 0 && block.endLine === 0) {
@@ -272,26 +274,18 @@ export function getWebviewContent(placeholder: string): string {
           lineInfo = ':' + block.startLine + '-' + block.endLine;
         }
 
-        var item = document.createElement('div');
-        item.className = 'block-item';
+        var card = document.createElement('div');
+        card.className = 'block-card';
 
-        item.innerHTML =
-          '<div class="block-color" style="background:' + color + '"></div>' +
-          '<div class="block-location">' + warnIcon + escapeHtml(block.fileName) + lineInfo + '</div>' +
-          '<button class="block-remove" data-idx="' + idx + '" title="移除">×</button>';
+        card.innerHTML =
+          '<div class="block-item">' +
+            '<span class="block-icon">' + icon + '</span>' +
+            '<div class="block-location">' + warnIcon + escapeHtml(block.fileName) + lineInfo + '</div>' +
+            '<button class="block-remove" data-idx="' + idx + '" title="移除">×</button>' +
+          '</div>' +
+          '<input type="text" class="file-desc-input" data-blockidx="' + idx + '" placeholder="添加说明（可选）" value="' + escapeHtml(block.description || '') + '">';
 
-        blockList.appendChild(item);
-
-        var desc = block.description || '';
-        var descInput = document.createElement('input');
-        descInput.type = 'text';
-        descInput.className = 'file-desc-input';
-        descInput.dataset.blockidx = idx;
-        descInput.placeholder = '添加说明（可选）';
-        descInput.value = desc;
-        blockList.appendChild(descInput);
-
-        lastFilePath = block.filePath;
+        blockList.appendChild(card);
       });
 
       bindDescInputs();

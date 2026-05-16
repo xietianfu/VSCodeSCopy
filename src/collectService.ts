@@ -44,6 +44,7 @@ export class CollectService {
       colorIndex,
       projectId,
       isUntitled,
+      isDirectory: false,
     };
 
     await this.storageService.addBlockToStash(newBlock);
@@ -95,6 +96,7 @@ export class CollectService {
       colorIndex,
       projectId,
       isUntitled: false,
+      isDirectory: isDir,
     };
 
     await this.storageService.addBlockToStash(newBlock);
