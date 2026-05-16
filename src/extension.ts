@@ -3,6 +3,7 @@ import { StorageService } from "./storageService";
 import { ProjectService } from "./projectService";
 import { CollectService } from "./collectService";
 import { SidebarProvider } from "./sidebarProvider";
+import { HistoryProvider } from "./historyProvider";
 import { StatusBarService } from "./statusBarService";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -10,14 +11,19 @@ export function activate(context: vscode.ExtensionContext) {
   const projectService = new ProjectService();
   const collectService = new CollectService(projectService, storageService);
   const statusBar = new StatusBarService(storageService);
+  const historyProvider = new HistoryProvider(storageService, projectService);
+
+  const refreshAll = () => {
+    statusBar.update();
+    sidebarProvider.updateView();
+    historyProvider.updateView();
+  };
 
   const sidebarProvider = new SidebarProvider(
     context,
     storageService,
     projectService,
-    () => {
-      statusBar.update();
-    }
+    refreshAll
   );
 
   context.subscriptions.push(
@@ -27,10 +33,12 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  const refreshUI = () => {
-    statusBar.update();
-    sidebarProvider.updateView();
-  };
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      HistoryProvider.viewType,
+      historyProvider
+    )
+  );
 
   const collectCommand = vscode.commands.registerCommand(
     "easy-copy.collect",
@@ -42,13 +50,18 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const result = await collectService.collectFromEditor(editor);
-      if (
-        result &&
-        (result.result.action === "added" || result.result.action === "merged")
-      ) {
-        sidebarProvider.show();
+      if (result) {
+        if (
+          result.result.action === "added" ||
+          result.result.action === "merged"
+        ) {
+          sidebarProvider.show();
+        }
+        if (result.result.action === "skipped" && result.result.existingBlock) {
+          sidebarProvider.flashBlock(result.result.existingBlock.filePath);
+        }
       }
-      refreshUI();
+      refreshAll();
     }
   );
 
@@ -63,7 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
     "easy-copy.clearStash",
     async () => {
       await storageService.clearStash();
-      refreshUI();
+      refreshAll();
       vscode.window.showInformationMessage("已清空暂存");
     }
   );
@@ -73,7 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(clearStashCommand);
   context.subscriptions.push(statusBar);
 
-  refreshUI();
+  refreshAll();
 }
 
 export function deactivate() {

@@ -74,6 +74,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     this.view.webview.postMessage({ type: "updateState", payload: state });
   }
 
+  public flashBlock(filePath: string) {
+    if (this.view) {
+      this.view.webview.postMessage({ type: "flashBlock", payload: filePath });
+    }
+  }
+
   public show() {
     if (this.view) {
       this.view.show(true);
@@ -145,8 +151,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     if (this.view) {
       this.view.webview.postMessage({ type: "copySuccess" });
     }
-
-    vscode.window.showInformationMessage("✓ 已复制到剪贴板");
 
     this.updateView();
     this.fireChange();

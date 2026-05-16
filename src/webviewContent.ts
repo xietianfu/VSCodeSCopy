@@ -24,13 +24,10 @@ export function getWebviewContent(placeholder: string): string {
       --btn-secondary-hover: var(--vscode-button-secondaryHoverBackground);
       --danger: #f44747;
       --success: #73c991;
+      --warn: #cca700;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: var(--vscode-font-family);
@@ -69,86 +66,84 @@ export function getWebviewContent(placeholder: string): string {
       color: var(--vscode-descriptionForeground);
     }
 
-    .empty-state .icon {
-      font-size: 28px;
-      margin-bottom: 6px;
-    }
-
-    .empty-state .hint {
-      font-size: 12px;
-      margin-top: 4px;
-    }
+    .empty-state .icon { font-size: 28px; margin-bottom: 6px; }
+    .empty-state .hint { font-size: 12px; margin-top: 4px; }
 
     .block-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
       margin-bottom: 10px;
     }
 
-    .block-item {
-      display: flex;
-      align-items: center;
-      padding: 6px 8px;
+    .file-group {
       border-radius: 4px;
       background: var(--input-bg);
       border: 1px solid var(--input-border);
-      transition: background 0.15s;
+      overflow: hidden;
       animation: fadeIn 0.2s ease;
     }
 
-    .block-item:hover {
-      background: var(--vscode-list-hoverBackground, rgba(255,255,255,0.05));
+    .file-group.flash {
+      animation: flashAnim 0.6s ease;
     }
 
-    .block-color {
+    .file-header {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      gap: 6px;
+    }
+
+    .file-color {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      margin-right: 8px;
       flex-shrink: 0;
     }
 
-    .block-info {
+    .file-name {
       flex: 1;
-      min-width: 0;
-    }
-
-    .block-file {
       font-weight: 600;
       font-size: 12px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .block-lines {
-      color: var(--vscode-descriptionForeground);
-      font-size: 11px;
-      margin-top: 1px;
+    .file-name .warn-icon {
+      color: var(--warn);
+      font-size: 12px;
     }
 
-    .block-remove {
+    .file-remove {
       background: none;
       border: none;
       color: var(--vscode-descriptionForeground);
       cursor: pointer;
       font-size: 14px;
-      padding: 2px 4px;
+      padding: 0 4px;
       border-radius: 3px;
       transition: all 0.15s;
-      flex-shrink: 0;
       line-height: 1;
     }
 
-    .block-remove:hover {
+    .file-remove:hover {
       color: var(--danger);
       background: rgba(244, 71, 71, 0.1);
     }
 
-    .prompt-section {
-      margin-bottom: 10px;
+    .line-list {
+      padding: 0 8px 6px 22px;
+      color: var(--vscode-descriptionForeground);
+      font-size: 11px;
+      line-height: 1.6;
     }
+
+    .prompt-section { margin-bottom: 10px; }
 
     .prompt-label {
       font-size: 11px;
@@ -171,13 +166,8 @@ export function getWebviewContent(placeholder: string): string {
       transition: border-color 0.15s;
     }
 
-    .prompt-input:focus {
-      border-color: var(--vscode-focusBorder);
-    }
-
-    .prompt-input::placeholder {
-      color: var(--vscode-descriptionForeground);
-    }
+    .prompt-input:focus { border-color: var(--vscode-focusBorder); }
+    .prompt-input::placeholder { color: var(--vscode-descriptionForeground); }
 
     .actions {
       display: flex;
@@ -202,24 +192,14 @@ export function getWebviewContent(placeholder: string): string {
       background: var(--btn-secondary-bg);
       color: var(--btn-secondary-fg);
     }
-
-    .btn-stash:hover {
-      background: var(--btn-secondary-hover);
-    }
+    .btn-stash:hover { background: var(--btn-secondary-hover); }
 
     .btn-copy {
       background: var(--btn-bg);
       color: var(--btn-fg);
     }
-
-    .btn-copy:hover {
-      background: var(--btn-hover);
-    }
-
-    .btn-copy:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    .btn-copy:hover { background: var(--btn-hover); }
+    .btn-copy:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-clear {
       background: none;
@@ -227,44 +207,29 @@ export function getWebviewContent(placeholder: string): string {
       border: 1px solid var(--border);
       flex: 0.5;
     }
+    .btn-clear:hover { background: rgba(244, 71, 71, 0.1); color: var(--danger); }
 
-    .btn-clear:hover {
-      background: rgba(244, 71, 71, 0.1);
-      color: var(--danger);
-    }
-
-    .success-overlay {
+    .copy-countdown {
       display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 100;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    .success-overlay.show {
-      display: flex;
-    }
-
-    .success-overlay .icon {
-      font-size: 36px;
-      margin-bottom: 4px;
-    }
-
-    .success-overlay .text {
-      font-size: 14px;
-      font-weight: 600;
+      text-align: center;
+      margin-top: 8px;
+      font-size: 12px;
       color: var(--success);
+      font-weight: 600;
     }
+
+    .copy-countdown.show { display: block; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(2px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes flashAnim {
+      0%, 100% { background: var(--input-bg); }
+      25% { background: rgba(255, 255, 255, 0.15); }
+      50% { background: var(--input-bg); }
+      75% { background: rgba(255, 255, 255, 0.15); }
     }
   </style>
 </head>
@@ -296,28 +261,29 @@ export function getWebviewContent(placeholder: string): string {
     <button id="btnCopy" class="btn btn-copy">✓ 完成并复制</button>
   </div>
 
-  <div id="successOverlay" class="success-overlay">
-    <div class="icon">✓</div>
-    <div class="text">已复制到剪贴板</div>
-  </div>
+  <div id="copyCountdown" class="copy-countdown"></div>
 
   <script nonce="${nonce}">
-    const vscode = acquireVsCodeApi();
-    let currentBlocks = [];
-    let currentPrompt = '';
-    let colors = ['#4A90E2', '#F5A623', '#7ED321', '#BD10E0', '#8B572A'];
+    var vscode = acquireVsCodeApi();
+    var currentBlocks = [];
+    var currentPrompt = '';
+    var colors = ['#4A90E2', '#F5A623', '#7ED321', '#BD10E0', '#8B572A'];
 
-    const blockList = document.getElementById('blockList');
-    const emptyState = document.getElementById('emptyState');
-    const blockCount = document.getElementById('blockCount');
-    const promptInput = document.getElementById('promptInput');
-    const btnStash = document.getElementById('btnStash');
-    const btnCopy = document.getElementById('btnCopy');
-    const btnClear = document.getElementById('btnClear');
-    const successOverlay = document.getElementById('successOverlay');
+    var blockList = document.getElementById('blockList');
+    var emptyState = document.getElementById('emptyState');
+    var blockCount = document.getElementById('blockCount');
+    var promptInput = document.getElementById('promptInput');
+    var btnStash = document.getElementById('btnStash');
+    var btnCopy = document.getElementById('btnCopy');
+    var btnClear = document.getElementById('btnClear');
+    var copyCountdown = document.getElementById('copyCountdown');
 
     function escapeHtml(str) {
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function formatLineInfo(startLine, endLine) {
+      return startLine === endLine ? '' + startLine : startLine + '-' + endLine;
     }
 
     function render() {
@@ -327,28 +293,66 @@ export function getWebviewContent(placeholder: string): string {
 
       blockList.innerHTML = '';
 
-      var idx = 0;
-      currentBlocks.forEach(function(block) {
-        var item = document.createElement('div');
-        item.className = 'block-item';
-
-        var lineInfo = block.startLine === block.endLine
-          ? '' + block.startLine
-          : block.startLine + '-' + block.endLine;
-
-        var color = colors[block.colorIndex % colors.length];
-
-        item.innerHTML =
-          '<div class="block-color" style="background:' + color + '"></div>' +
-          '<div class="block-info">' +
-            '<div class="block-file">' + escapeHtml(block.fileName) + '</div>' +
-            '<div class="block-lines">' + escapeHtml(lineInfo) + '</div>' +
-          '</div>' +
-          '<button class="block-remove" data-idx="' + idx + '" title="移除">×</button>';
-
-        blockList.appendChild(item);
-        idx++;
+      var groups = {};
+      currentBlocks.forEach(function(block, idx) {
+        if (!groups[block.filePath]) {
+          groups[block.filePath] = { blocks: [], indices: [], colorIndex: block.colorIndex, fileName: block.fileName, isUntitled: block.isUntitled };
+        }
+        groups[block.filePath].blocks.push(block);
+        groups[block.filePath].indices.push(idx);
       });
+
+      var filePaths = Object.keys(groups);
+      filePaths.forEach(function(fp) {
+        var g = groups[fp];
+        var color = colors[g.colorIndex % colors.length];
+
+        var group = document.createElement('div');
+        group.className = 'file-group';
+        group.dataset.filepath = fp;
+
+        var warnIcon = g.isUntitled ? '<span class="warn-icon" title="未保存文件">⚠</span>' : '';
+
+        var lineInfos = g.blocks.map(function(b) {
+          return formatLineInfo(b.startLine, b.endLine);
+        }).join('\\n    ');
+
+        group.innerHTML =
+          '<div class="file-header">' +
+            '<div class="file-color" style="background:' + color + '"></div>' +
+            '<div class="file-name">' + warnIcon + escapeHtml(g.fileName) + '</div>' +
+            '<button class="file-remove" data-filepath="' + escapeHtml(fp) + '" title="移除文件所有块">×</button>' +
+          '</div>' +
+          '<div class="line-list">' + lineInfos + '</div>';
+
+        blockList.appendChild(group);
+      });
+    }
+
+    function flashFileGroup(filePath) {
+      var groups = blockList.querySelectorAll('.file-group');
+      for (var i = 0; i < groups.length; i++) {
+        if (groups[i].dataset.filepath === filePath) {
+          groups[i].classList.add('flash');
+          setTimeout(function(el) { el.classList.remove('flash'); }, 700, groups[i]);
+          break;
+        }
+      }
+    }
+
+    function startCountdown(seconds) {
+      var remaining = seconds;
+      copyCountdown.textContent = '✓ 已复制 (' + remaining + 's)';
+      copyCountdown.classList.add('show');
+      var timer = setInterval(function() {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(timer);
+          copyCountdown.classList.remove('show');
+        } else {
+          copyCountdown.textContent = '✓ 已复制 (' + remaining + 's)';
+        }
+      }, 1000);
     }
 
     window.addEventListener('message', function(event) {
@@ -364,27 +368,23 @@ export function getWebviewContent(placeholder: string): string {
         render();
       }
       if (message.type === 'copySuccess') {
-        successOverlay.classList.add('show');
-        setTimeout(function() {
-          successOverlay.classList.remove('show');
-        }, 1500);
+        startCountdown(3);
+      }
+      if (message.type === 'flashBlock') {
+        flashFileGroup(message.payload);
       }
     });
 
     blockList.addEventListener('click', function(e) {
-      if (e.target.classList.contains('block-remove')) {
-        var idx = parseInt(e.target.dataset.idx);
-        var block = currentBlocks[idx];
-        if (block) {
+      if (e.target.classList.contains('file-remove')) {
+        var fp = e.target.dataset.filepath;
+        var toRemove = currentBlocks.filter(function(b) { return b.filePath === fp; });
+        toRemove.forEach(function(block) {
           vscode.postMessage({
             type: 'removeBlock',
-            payload: {
-              filePath: block.filePath,
-              startLine: block.startLine,
-              endLine: block.endLine
-            }
+            payload: { filePath: block.filePath, startLine: block.startLine, endLine: block.endLine }
           });
-        }
+        });
       }
     });
 
@@ -392,10 +392,7 @@ export function getWebviewContent(placeholder: string): string {
     promptInput.addEventListener('input', function() {
       clearTimeout(promptTimer);
       promptTimer = setTimeout(function() {
-        vscode.postMessage({
-          type: 'updatePrompt',
-          payload: promptInput.value
-        });
+        vscode.postMessage({ type: 'updatePrompt', payload: promptInput.value });
       }, 300);
     });
 

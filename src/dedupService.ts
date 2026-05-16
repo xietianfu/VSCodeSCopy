@@ -61,19 +61,22 @@ export function formatOutput(blocks: CodeBlock[], prompt?: string): string {
     lines.push("");
   }
 
-  const fileGroups = new Map<string, CodeBlock[]>();
+  const fileGroups = new Map<string, { fileName: string; blocks: CodeBlock[] }>();
   for (const block of blocks) {
-    const existing = fileGroups.get(block.filePath) || [];
-    existing.push(block);
-    fileGroups.set(block.filePath, existing);
+    const group = fileGroups.get(block.filePath);
+    if (group) {
+      group.blocks.push(block);
+    } else {
+      fileGroups.set(block.filePath, { fileName: block.fileName, blocks: [block] });
+    }
   }
 
-  for (const [filePath, fileBlocks] of fileGroups) {
-    for (const block of fileBlocks) {
+  for (const [, group] of fileGroups) {
+    for (const block of group.blocks) {
       if (block.startLine === block.endLine) {
-        lines.push(`${filePath}:${block.startLine}`);
+        lines.push(`${group.fileName}:${block.startLine}`);
       } else {
-        lines.push(`${filePath}:${block.startLine}-${block.endLine}`);
+        lines.push(`${group.fileName}:${block.startLine}-${block.endLine}`);
       }
     }
   }

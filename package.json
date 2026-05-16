@@ -11,7 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:easyCopySidebar"
+    "onView:easyCopySidebar",
+    "onView:easyCopyHistory"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -30,6 +31,11 @@
           "type": "webview",
           "id": "easyCopySidebar",
           "name": "代码收集"
+        },
+        {
+          "type": "webview",
+          "id": "easyCopyHistory",
+          "name": "历史记录"
         }
       ]
     },
@@ -94,6 +100,11 @@
           "type": "string",
           "default": "例如：修复类型错误，检查边界情况...",
           "description": "AI 提示输入框占位文本"
+        },
+        "easy-copy.showWelcome": {
+          "type": "boolean",
+          "default": true,
+          "description": "首次使用时显示欢迎引导"
         }
       }
     }

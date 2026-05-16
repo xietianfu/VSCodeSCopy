@@ -21,14 +21,13 @@ export class StatusBarService {
     const count = stash?.blocks.length || 0;
 
     if (count > 0) {
-      this.statusBarItem.text = `$(clippy) ${count}`;
+      this.statusBarItem.text = `📋 ${count}`;
       this.statusBarItem.tooltip = `Easy Copy: ${count} 个代码块已暂存（点击打开）`;
-      this.statusBarItem.show();
     } else {
-      this.statusBarItem.text = "$(clippy)";
-      this.statusBarItem.tooltip = "Easy Copy: 暂无暂存（点击打开面板）";
-      this.statusBarItem.show();
+      this.statusBarItem.text = "📋";
+      this.statusBarItem.tooltip = "Easy Copy（点击打开面板）";
     }
+    this.statusBarItem.show();
   }
 
   dispose() {

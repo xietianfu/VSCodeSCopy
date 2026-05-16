@@ -5,6 +5,7 @@ export interface CodeBlock {
   endLine: number;
   colorIndex: number;
   projectId: string;
+  isUntitled: boolean;
 }
 
 export interface Collection {
@@ -26,13 +27,15 @@ export interface StorageData {
 }
 
 export type MessageType =
-  | "addBlock"
   | "removeBlock"
   | "updatePrompt"
   | "copyAndClose"
   | "stashAndClose"
   | "requestState"
-  | "clearStash";
+  | "clearStash"
+  | "copyHistory"
+  | "deleteHistory"
+  | "searchHistory";
 
 export interface WebviewMessage {
   type: MessageType;
@@ -43,4 +46,9 @@ export interface WebviewState {
   blocks: CodeBlock[];
   prompt: string;
   colors: string[];
+}
+
+export interface HistoryWebviewState {
+  records: HistoryRecord[];
+  projectNameMap: Record<string, string>;
 }

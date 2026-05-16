@@ -22,7 +22,8 @@ export class CollectService {
 
     const document = editor.document;
     const projectId = this.projectService.getProjectId(document);
-    const filePath = this.projectService.isUntitled(document)
+    const isUntitled = this.projectService.isUntitled(document);
+    const filePath = isUntitled
       ? this.projectService.getFileName(document)
       : this.projectService.getRelativePath(document);
     const fileName = this.projectService.getFileName(document);
@@ -42,6 +43,7 @@ export class CollectService {
       endLine,
       colorIndex,
       projectId,
+      isUntitled,
     };
 
     const result = deduplicateBlock(existingBlocks, newBlock);
