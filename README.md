@@ -1,5 +1,7 @@
 # S Copy
 
+**[English](README.en.md)**
+
 快速收集代码位置（文件路径 + 行号），批量反馈给 AI CLI 进行精准修复。
 
 ## 使用场景

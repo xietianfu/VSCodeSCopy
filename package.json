@@ -18,7 +18,23 @@
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Programming Languages",
+    "Snippets",
     "Other"
+  ],
+  "keywords": [
+    "copy",
+    "clipboard",
+    "code review",
+    "AI",
+    "Aider",
+    "Claude",
+    "GPT",
+    "code location",
+    "line number",
+    "batch",
+    "collect",
+    "snippet"
   ],
   "activationEvents": [
     "onView:sCopySidebar",
