@@ -20,6 +20,7 @@ When using AI CLI tools like Aider, Claude CLI, or other AI extensions, you need
 - **Per-item description**: Add individual descriptions to each collected item
 - **Summary description**: Add an overall summary after collecting all items
 - **One-click copy**: Click "✓ Copy All" to copy formatted content to clipboard
+- **Path mode toggle**: Switch between relative and absolute path modes with the toggle button in the panel header
 - **History**: View history in sidebar, search, re-copy, delete
 - **Status bar badge**: Shows real-time count of collected items
 
@@ -31,7 +32,7 @@ When using AI CLI tools like Aider, Claude CLI, or other AI extensions, you need
 Or install manually:
 
 ```bash
-code --install-extension s-copy-0.1.0.vsix
+code --install-extension s-copy-0.1.2.vsix
 ```
 
 ## Quick Start
@@ -57,14 +58,16 @@ Click the "✓ Copy All" button, or press `Cmd+Enter`. The content is automatica
 **Output example:**
 
 ```
-Header.tsx:20-30
+src/components/Header.tsx:20-30
 Type definition error here
 
-api.ts:15-22
+src/services/api.ts:15-22
 This API needs to be changed
 
 Please fix the type errors in the above code
 ```
+
+> Click the "Relative" button in the panel header to switch to absolute path mode.
 
 Just paste it into your AI CLI.
 
@@ -77,6 +80,7 @@ Just paste it into your AI CLI.
 | Collect file/folder | Explorer right-click → "+ Collect" |
 | Open panel | Click 📋 in status bar / Activity Bar icon |
 | Copy all | Click button in panel / `Cmd+Enter` |
+| Toggle path mode | Click path mode button in panel header |
 | Clear all | Click "Clear" button in panel |
 
 ## Sidebar Panel
