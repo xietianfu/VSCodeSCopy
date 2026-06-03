@@ -44,6 +44,37 @@ export function getWebviewContent(placeholder: string, strings: Record<string, s
       font-weight: 400;
     }
 
+    .header .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .path-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+      background: var(--vscode-input-background, rgba(255, 255, 255, 0.05));
+      color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.8));
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .path-toggle:hover {
+      background: var(--vscode-button-hoverBackground, #1177bb);
+      color: var(--vscode-button-foreground, #ffffff);
+      border-color: var(--vscode-button-hoverBackground, #1177bb);
+    }
+
+    .path-toggle .toggle-icon {
+      font-size: 12px;
+    }
+
     .empty-state {
       text-align: center;
       padding: 24px 12px;
@@ -211,6 +242,12 @@ export function getWebviewContent(placeholder: string, strings: Record<string, s
 <body>
   <div class="header">
     <h2 id="panelTitle">${escapeHtml(s.panelTitle.replace("{0}", "0"))}</h2>
+    <div class="actions-group">
+      <button id="pathToggle" class="path-toggle">
+        <span class="toggle-icon">🔗</span>
+        <span id="pathToggleLabel"></span>
+      </button>
+    </div>
   </div>
 
   <div id="emptyState" class="empty-state">
@@ -251,6 +288,9 @@ export function getWebviewContent(placeholder: string, strings: Record<string, s
     var btnCopy = document.getElementById('btnCopy');
     var btnClear = document.getElementById('btnClear');
     var copyCountdown = document.getElementById('copyCountdown');
+    var pathToggle = document.getElementById('pathToggle');
+    var pathToggleLabel = document.getElementById('pathToggleLabel');
+    var currentPathMode = 'relative';
 
     function escapeHtml(str) {
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -292,6 +332,15 @@ export function getWebviewContent(placeholder: string, strings: Record<string, s
 
       bindDescInputs();
     }
+
+    function updatePathToggle() {
+      pathToggleLabel.textContent = currentPathMode === 'relative' ? strings.pathModeRelative : strings.pathModeAbsolute;
+      pathToggle.title = currentPathMode === 'relative' ? strings.pathModeAbsolute : strings.pathModeRelative;
+    }
+
+    pathToggle.addEventListener('click', function() {
+      vscode.postMessage({ type: 'togglePathMode' });
+    });
 
     function bindDescInputs() {
       var inputs = blockList.querySelectorAll('.file-desc-input');
@@ -337,6 +386,10 @@ export function getWebviewContent(placeholder: string, strings: Record<string, s
         colors = payload.colors || colors;
         currentPrompt = payload.prompt || '';
         if (payload.strings) { strings = payload.strings; }
+        if (payload.pathMode) {
+          currentPathMode = payload.pathMode;
+        }
+        updatePathToggle();
         if (document.activeElement !== promptInput) {
           promptInput.value = currentPrompt;
         }

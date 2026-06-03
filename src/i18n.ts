@@ -28,7 +28,9 @@ type LocaleKey =
   | "historyYesterday"
   | "btnRecopy"
   | "btnDelete"
-  | "wholeFile";
+  | "wholeFile"
+  | "pathModeRelative"
+  | "pathModeAbsolute";
 
 const zh: Record<LocaleKey, string> = {
   selectCodeFirst: "请先选中代码",
@@ -59,6 +61,8 @@ const zh: Record<LocaleKey, string> = {
   btnRecopy: "再次复制",
   btnDelete: "删除",
   wholeFile: "(整文件)",
+  pathModeRelative: "相对路径",
+  pathModeAbsolute: "绝对路径",
 };
 
 const en: Record<LocaleKey, string> = {
@@ -90,6 +94,8 @@ const en: Record<LocaleKey, string> = {
   btnRecopy: "Re-copy",
   btnDelete: "Delete",
   wholeFile: "(whole file)",
+  pathModeRelative: "Relative",
+  pathModeAbsolute: "Absolute",
 };
 
 const locales: Record<string, Record<LocaleKey, string>> = { zh, en };
@@ -129,6 +135,8 @@ export function getWebviewStrings(): Record<string, string> {
     btnCopy: t("btnCopy"),
     copyCountdown: t("copyCountdown"),
     wholeFile: t("wholeFile"),
+    pathModeRelative: t("pathModeRelative"),
+    pathModeAbsolute: t("pathModeAbsolute"),
   };
 }
 

@@ -18,10 +18,10 @@ export function assignColorIndex(blocks: CodeBlock[], filePath: string): number 
   return 0;
 }
 
-export function formatOutput(blocks: CodeBlock[], prompt?: string): string {
+export function formatOutput(blocks: CodeBlock[], prompt?: string, pathMode: "relative" | "absolute" = "relative"): string {
   const lines: string[] = [];
 
-  const fileGroups = new Map<string, { fileName: string; blocks: CodeBlock[]; description?: string }>();
+  const fileGroups = new Map<string, { fileName: string; filePath: string; absolutePath: string; blocks: CodeBlock[]; description?: string }>();
   for (const block of blocks) {
     const group = fileGroups.get(block.filePath);
     if (group) {
@@ -29,6 +29,8 @@ export function formatOutput(blocks: CodeBlock[], prompt?: string): string {
     } else {
       fileGroups.set(block.filePath, {
         fileName: block.fileName,
+        filePath: block.filePath,
+        absolutePath: block.absolutePath,
         blocks: [block],
         description: block.description,
       });
@@ -36,13 +38,14 @@ export function formatOutput(blocks: CodeBlock[], prompt?: string): string {
   }
 
   for (const [, group] of fileGroups) {
+    const displayPath = pathMode === "absolute" ? group.absolutePath : group.filePath;
     for (const block of group.blocks) {
       if (block.startLine === 0 && block.endLine === 0) {
-        lines.push(group.fileName);
+        lines.push(displayPath);
       } else if (block.startLine === block.endLine) {
-        lines.push(`${group.fileName}:${block.startLine}`);
+        lines.push(`${displayPath}:${block.startLine}`);
       } else {
-        lines.push(`${group.fileName}:${block.startLine}-${block.endLine}`);
+        lines.push(`${displayPath}:${block.startLine}-${block.endLine}`);
       }
     }
 

@@ -12,6 +12,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   private storageService: StorageService;
   private projectService: ProjectService;
   private onDidChange?: () => void;
+  private pathMode: "relative" | "absolute";
 
   constructor(
     private context: vscode.ExtensionContext,
@@ -22,6 +23,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     this.storageService = storageService;
     this.projectService = projectService;
     this.onDidChange = onDidChange;
+    this.pathMode = this.context.globalState.get<"relative" | "absolute">("s-copy.pathMode", "relative");
   }
 
   public resolveWebviewView(
@@ -71,6 +73,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       prompt: stash?.prompt || "",
       colors,
       strings: getWebviewStrings(),
+      pathMode: this.pathMode,
     };
 
     this.view.webview.postMessage({ type: "updateState", payload: state });
@@ -124,6 +127,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         this.fireChange();
         break;
       }
+      case "togglePathMode": {
+        this.pathMode = this.pathMode === "relative" ? "absolute" : "relative";
+        await this.context.globalState.update("s-copy.pathMode", this.pathMode);
+        this.updateView();
+        break;
+      }
     }
   }
 
@@ -134,7 +143,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       return;
     }
 
-    const output = formatOutput(stash.blocks, stash.prompt);
+    const output = formatOutput(stash.blocks, stash.prompt, this.pathMode);
     await vscode.env.clipboard.writeText(output);
 
     const historyRecord = {

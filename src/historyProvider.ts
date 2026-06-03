@@ -11,13 +11,16 @@ export class HistoryProvider implements vscode.WebviewViewProvider {
   private view?: vscode.WebviewView;
   private storageService: StorageService;
   private projectService: ProjectService;
+  private pathMode: "relative" | "absolute";
 
   constructor(
     storageService: StorageService,
-    projectService: ProjectService
+    projectService: ProjectService,
+    private context: vscode.ExtensionContext
   ) {
     this.storageService = storageService;
     this.projectService = projectService;
+    this.pathMode = this.context.globalState.get<"relative" | "absolute">("s-copy.pathMode", "relative");
   }
 
   public resolveWebviewView(
@@ -76,7 +79,7 @@ export class HistoryProvider implements vscode.WebviewViewProvider {
         const records = this.storageService.getHistory();
         const record = records.find((r) => r.id === id);
         if (record) {
-          const output = formatOutput(record.blocks, record.prompt);
+          const output = formatOutput(record.blocks, record.prompt, this.pathMode);
           await vscode.env.clipboard.writeText(output);
           vscode.window.showInformationMessage(t("copiedHistory"));
         }

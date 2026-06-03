@@ -28,6 +28,9 @@ export class CollectService {
       ? this.projectService.getFileName(document)
       : this.projectService.getRelativePath(document);
     const fileName = this.projectService.getFileName(document);
+    const absolutePath = isUntitled
+      ? fileName
+      : document.uri.fsPath;
 
     const startLine = selection.start.line + 1;
     const endLine = selection.end.line + 1;
@@ -40,6 +43,7 @@ export class CollectService {
     const newBlock: CodeBlock = {
       filePath,
       fileName,
+      absolutePath,
       startLine,
       endLine,
       colorIndex,
@@ -73,11 +77,14 @@ export class CollectService {
 
     let filePath: string;
     let fileName: string;
+    let absolutePath: string;
 
     if (workspaceFolder) {
       filePath = vscode.workspace.asRelativePath(uri, false);
+      absolutePath = uri.fsPath;
     } else {
       filePath = uri.path.split("/").pop() || uri.path;
+      absolutePath = uri.fsPath;
     }
     fileName = uri.path.split("/").pop() || "unknown";
 
@@ -92,6 +99,7 @@ export class CollectService {
     const newBlock: CodeBlock = {
       filePath,
       fileName,
+      absolutePath,
       startLine: 0,
       endLine: 0,
       colorIndex,

@@ -1,6 +1,7 @@
 export interface CodeBlock {
   filePath: string;
   fileName: string;
+  absolutePath: string;
   startLine: number;
   endLine: number;
   colorIndex: number;
@@ -37,7 +38,8 @@ export type MessageType =
   | "clearStash"
   | "copyHistory"
   | "deleteHistory"
-  | "searchHistory";
+  | "searchHistory"
+  | "togglePathMode";
 
 export interface WebviewMessage {
   type: MessageType;
@@ -49,6 +51,7 @@ export interface WebviewState {
   prompt: string;
   colors: string[];
   strings: Record<string, string>;
+  pathMode: "relative" | "absolute";
 }
 
 export interface HistoryWebviewState {

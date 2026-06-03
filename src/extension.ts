@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
   const projectService = new ProjectService();
   const collectService = new CollectService(projectService, storageService);
   const statusBar = new StatusBarService(storageService);
-  const historyProvider = new HistoryProvider(storageService, projectService);
+  const historyProvider = new HistoryProvider(storageService, projectService, context);
 
   const refreshAll = () => {
     statusBar.update();
