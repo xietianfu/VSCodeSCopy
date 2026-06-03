@@ -8,12 +8,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xietf/VSCodeSCopy"
+    "url": "https://github.com/xietianfu/VSCodeSCopy"
   },
   "bugs": {
-    "url": "https://github.com/xietf/VSCodeSCopy/issues"
+    "url": "https://github.com/xietianfu/VSCodeSCopy/issues"
   },
-  "homepage": "https://github.com/xietf/VSCodeSCopy#readme",
+  "homepage": "https://github.com/xietianfu/VSCodeSCopy#readme",
   "engines": {
     "vscode": "^1.85.0"
   },
